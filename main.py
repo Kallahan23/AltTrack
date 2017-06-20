@@ -41,7 +41,7 @@ class MainFloat(FloatLayout):
         self.valuetxt.update()
 
     def notify_me(self):
-        notification.notify("AltTrack", "1 Eth = ${}".format(valuetxt.currentValue))
+        notification.notify("AltTrack", "1 Eth = ${}".format(self.valuetxt.currentValue))
 
 
 class ValueText(Label):

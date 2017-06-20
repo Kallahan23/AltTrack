@@ -10,11 +10,13 @@
         width: self.parent.width - 20
     Button:
         size_hint: None, None
-        size: 200, 100
+        size: 150, 50
+        center_x: self.parent.center_x
+        center_y: self.parent.center_y - 100
         text: "Notify me"
-        font_size: 50
+        font_size: 20
         on_press:
-            parent.notify_me()
+            self.parent.notify_me()
     Label:
         # size_hint: None, None
         # y: self.parent.width - 50

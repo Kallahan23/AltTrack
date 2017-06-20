@@ -1,0 +1,36 @@
+#:kivy 1.9.1
+
+<MainFloat>:
+    valuetxt: valuetxt
+    ValueText:
+        id: valuetxt
+        size_hint: None, 0.2
+        # center: self.parent.center_x, self.parent.height * (3/4)
+        pos: 10, 2*self.parent.height/3
+        width: self.parent.width - 20
+    Button:
+        size_hint: None, None
+        size: 200, 100
+        text: "Notify me"
+        font_size: 50
+        on_press:
+            parent.notify_me()
+    Label:
+        # size_hint: None, None
+        # y: self.parent.width - 50
+        text: "Request status: " + str(valuetxt.status)
+
+<ValueText>:
+    text_size: self.size
+    halign: 'center'
+    valign: 'middle'
+    font_size: 35
+    text: "1 Eth = $" + str(self.currentValue)
+    color: self.text_colour
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.05, 1
+        Rectangle:
+            source: "images/orb.png"
+            pos: self.pos
+            size: self.size

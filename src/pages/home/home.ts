@@ -13,7 +13,11 @@ export class HomePage {
 
     cryptoCurrencies = [
         { name: "Ethereum", code: "ETH" },
+        { name: "Ethereum Classic", code: "ETC" },
         { name: "Bitcoin", code: "BTC" },
+        { name: "Bitcoin Cash", code: "BCH" },
+        { name: "Litecoin", code: "LTC" },
+        { name: "Ripple", code: "XRP" },
         // { name: "Miota", code: "MIOTA" }
     ]
 

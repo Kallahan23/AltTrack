@@ -22,6 +22,10 @@ export class CoinGatewayServiceProvider {
     getMarketTick(crypto: string, fiat: string): Promise<any[]> {
         switch (crypto) {
             case "BTC":
+            case "BCH":
+            case "LTC":
+            case "ETC":
+            case "XRP":
             case "ETH": {
                 let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto + "/" + fiat + this.BTCMARKETS_TICK_PATH;
                 return this.http.get(api)

@@ -18,7 +18,8 @@ export class HomePage {
         { name: "Bitcoin Cash", code: "BCH" },
         { name: "Litecoin", code: "LTC" },
         { name: "Ripple", code: "XRP" },
-        { name: "Dogecoin", code: "DOGE" }
+        { name: "Dogecoin", code: "DOGE" },
+        { name: "Iota", code: "IOTA" }
     ]
 
     timerSubscription: Subscription;

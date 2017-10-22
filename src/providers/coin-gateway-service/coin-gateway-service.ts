@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, URLSearchParams, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 /*
 Generated class for the CoinGatewayServiceProvider provider.
@@ -10,6 +11,10 @@ and Angular DI.
 */
 @Injectable()
 export class CoinGatewayServiceProvider {
+
+    CRYPTOCOMPARE_BASE_URL = "https://min-api.cryptocompare.com/data";
+    CRYPTOCOMPARE_PRICE_PATH = "/price";
+
 
     COINSPOT_BASE_URL = "https://www.coinspot.com.au/pubapi";
     COINSPOT_LATEST_PATH = "/latest";
@@ -41,6 +46,18 @@ export class CoinGatewayServiceProvider {
                 return this.http.get(api)
                 .toPromise()
                 .then(response => response.json()["prices"]["doge"]["last"] as number)
+                .catch(this.handleError);
+            }
+            case "IOTA": {
+                let api = this.CRYPTOCOMPARE_BASE_URL + this.CRYPTOCOMPARE_PRICE_PATH;
+                let params: URLSearchParams = new URLSearchParams();
+                params.set("fsym", crypto);
+                params.set("tsyms", fiat);
+                return this.http.get(api, {
+                    search: params
+                })
+                .toPromise()
+                .then(response => response.json()[fiat] as number)
                 .catch(this.handleError);
             }
         }

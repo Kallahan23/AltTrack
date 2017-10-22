@@ -29,7 +29,9 @@
     </ion-header>
 
     <ion-content padding>
-        {{ latestPrice | currency:'USD':true:'1.2-2' }}
+        <div class="dash-content">
+            1 {{ currentCrypto }} = {{ latestPrice | currency:'USD':true:'1.2-2' }}
+        </div>
     </ion-content>
 
 </ion-split-pane>

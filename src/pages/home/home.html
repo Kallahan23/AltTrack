@@ -1,11 +1,35 @@
-<ion-header>
-    <ion-navbar>
-        <ion-title>
-            AltTrack
-        </ion-title>
-    </ion-navbar>
-</ion-header>
+<ion-split-pane>
 
-<ion-content padding>
-    {{ latestPrice | currency:'USD':true:'1.2-2' }}
-</ion-content>
+    <ion-menu side="left" [content]="content">
+        <ion-header>
+            <ion-toolbar>
+                <ion-title>Crypto Coins</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content>
+            <ion-list>
+                <button menuClose="left" ion-item *ngFor="let coin of cryptoCurrencies" (click)="changeCoin(coin)">
+                    {{ coin.name }}
+                </button>
+            </ion-list>
+        </ion-content>
+    </ion-menu>
+
+    <ion-nav [root]="rootPage" #content swipeBackEnabled="false" main name="app"></ion-nav>
+
+    <ion-header>
+        <ion-navbar>
+            <button ion-button menuToggle>
+                <ion-icon name="menu"></ion-icon>
+            </button>
+            <ion-title>
+                AltTrack
+            </ion-title>
+        </ion-navbar>
+    </ion-header>
+
+    <ion-content padding>
+        {{ latestPrice | currency:'USD':true:'1.2-2' }}
+    </ion-content>
+
+</ion-split-pane>

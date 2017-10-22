@@ -24,7 +24,6 @@ export class CoinGatewayServiceProvider {
             case "BTC":
             case "ETH": {
                 let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto + "/" + fiat + this.BTCMARKETS_TICK_PATH;
-                console.log(api);
                 return this.http.get(api)
                 .toPromise()
                 .then(response => response.json() as any[])

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, MenuController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Observable, Subscription } from 'rxjs/Rx';
 
@@ -11,12 +11,29 @@ import { CoinGatewayServiceProvider } from '../../providers/coin-gateway-service
 })
 export class HomePage {
 
+    cryptoCurrencies = [
+        { name: "Ethereum", code: "ETH" },
+        { name: "Bitcoin", code: "BTC" },
+        // { name: "Miota", code: "MIOTA" }
+    ]
+
     timerSubscription: Subscription;
     currentCrypto: string = "ETH";
     latestPrice: number;
 
-    constructor(public navCtrl: NavController, private storage: Storage, private coinService: CoinGatewayServiceProvider) {
+    constructor(
+        public navCtrl: NavController,
+        private storage: Storage,
+        private menuCtrl: MenuController,
+        private coinService: CoinGatewayServiceProvider
+    ) {
         this.setDefaults();
+    }
+
+    ionViewDidLoad() {
+        console.log('ionViewDidLoad HomePage');
+        this.menuCtrl.enable(true, "left");
+        this.menuCtrl.open("left");
     }
 
     setDefaults() {
@@ -45,12 +62,15 @@ export class HomePage {
             if (fiat) {
                 this.coinService.getMarketTick(this.currentCrypto, fiat)
                 .then(response => {
-                    console.log("response is:");
-                    console.log(response);
                     this.latestPrice = response["lastPrice"];
                 });
             }
         });
+    }
+
+    changeCoin(coin) {
+        this.currentCrypto = coin.code;
+        this.getCurrentPrice();
     }
 
 }

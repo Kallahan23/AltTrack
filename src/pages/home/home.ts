@@ -18,7 +18,7 @@ export class HomePage {
         { name: "Bitcoin Cash", code: "BCH" },
         { name: "Litecoin", code: "LTC" },
         { name: "Ripple", code: "XRP" },
-        // { name: "Miota", code: "MIOTA" }
+        { name: "Dogecoin", code: "DOGE" }
     ]
 
     timerSubscription: Subscription;
@@ -65,16 +65,19 @@ export class HomePage {
         .then(fiat => {
             if (fiat) {
                 this.coinService.getMarketTick(this.currentCrypto, fiat)
-                .then(response => {
-                    this.latestPrice = response["lastPrice"];
+                .then(price => {
+                    this.latestPrice = price;
+                    console.log(price);
                 });
             }
         });
     }
 
     changeCoin(coin) {
-        this.currentCrypto = coin.code;
-        this.getCurrentPrice();
+        if (this.currentCrypto != coin.code) {
+            this.currentCrypto = coin.code;
+            this.getCurrentPrice();
+        }
     }
 
 }

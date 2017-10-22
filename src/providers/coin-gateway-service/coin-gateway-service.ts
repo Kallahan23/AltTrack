@@ -11,6 +11,9 @@ and Angular DI.
 @Injectable()
 export class CoinGatewayServiceProvider {
 
+    COINSPOT_BASE_URL = "https://www.coinspot.com.au/pubapi";
+    COINSPOT_LATEST_PATH = "/latest";
+
     BTCMARKETS_BASE_URL = "https://api.btcmarkets.net";
     BTCMARKETS_MARKET_PATH = "/market";
     BTCMARKETS_TICK_PATH = "/tick";
@@ -19,7 +22,7 @@ export class CoinGatewayServiceProvider {
         console.log('Hello CoinGatewayServiceProvider Provider');
     }
 
-    getMarketTick(crypto: string, fiat: string): Promise<any[]> {
+    getMarketTick(crypto: string, fiat: string): Promise<number> {
         switch (crypto) {
             case "BTC":
             case "BCH":
@@ -30,10 +33,16 @@ export class CoinGatewayServiceProvider {
                 let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto + "/" + fiat + this.BTCMARKETS_TICK_PATH;
                 return this.http.get(api)
                 .toPromise()
-                .then(response => response.json() as any[])
+                .then(response => response.json()["lastPrice"] as number)
                 .catch(this.handleError);
             }
-            case "MIOTA":
+            case "DOGE": {
+                let api = this.COINSPOT_BASE_URL + this.COINSPOT_LATEST_PATH;
+                return this.http.get(api)
+                .toPromise()
+                .then(response => response.json()["prices"]["doge"]["last"] as number)
+                .catch(this.handleError);
+            }
         }
     }
 

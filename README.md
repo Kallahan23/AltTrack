@@ -9,3 +9,6 @@ Using BTC Markets API:
 - Ethereum Classic (ETC)
 - Litecoin (LTC)
 - Ripple (XRP)
+
+Using Coinspot API
+- Dogecoin (DOGE)

@@ -6,6 +6,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 
+import { ComponentsModule } from '../components/components.module';
+import { DelayedLoadingAnimationComponent } from '../components/delayed-loading-animation/delayed-loading-animation';
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { CoinGatewayServiceProvider } from '../providers/coin-gateway-service/coin-gateway-service';
@@ -18,6 +21,7 @@ import { CoinGatewayServiceProvider } from '../providers/coin-gateway-service/co
     imports: [
         BrowserModule,
         HttpModule,
+        ComponentsModule,
         IonicModule.forRoot(MyApp),
         IonicStorageModule.forRoot({
             name: "altTrackSettings"
@@ -29,6 +33,7 @@ import { CoinGatewayServiceProvider } from '../providers/coin-gateway-service/co
         HomePage
     ],
     providers: [
+        DelayedLoadingAnimationComponent,
         StatusBar,
         SplashScreen,
         {provide: ErrorHandler, useClass: IonicErrorHandler},

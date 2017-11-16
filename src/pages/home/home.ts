@@ -5,6 +5,8 @@ import { Observable, Subscription } from 'rxjs/Rx';
 
 import { CoinGatewayServiceProvider } from '../../providers/coin-gateway-service/coin-gateway-service';
 
+import { DelayedLoadingAnimationComponent } from '../../components/delayed-loading-animation/delayed-loading-animation';
+
 @Component({
     selector: 'page-home',
     templateUrl: 'home.html'
@@ -14,22 +16,23 @@ export class HomePage {
     cryptoCurrencies = [
         { name: "Ethereum", code: "ETH" },
         { name: "Ethereum Classic", code: "ETC" },
+        { name: "Miota", code: "IOTA" },
         { name: "Bitcoin", code: "BTC" },
         { name: "Bitcoin Cash", code: "BCH" },
         { name: "Litecoin", code: "LTC" },
-        { name: "Ripple", code: "XRP" },
         { name: "Dogecoin", code: "DOGE" },
-        { name: "Iota", code: "IOTA" }
+        { name: "Ripple", code: "XRP" }
     ]
 
     timerSubscription: Subscription;
-    currentCrypto: string = "ETH";
+    currentCrypto: string;
     latestPrice: number;
 
     constructor(
         public navCtrl: NavController,
         private storage: Storage,
         private menuCtrl: MenuController,
+        private loader: DelayedLoadingAnimationComponent,
         private coinService: CoinGatewayServiceProvider
     ) {
         this.setDefaults();
@@ -62,16 +65,20 @@ export class HomePage {
     }
 
     getCurrentPrice() {
-        this.storage.get("myFiatCurrency")
-        .then(fiat => {
-            if (fiat) {
-                this.coinService.getMarketTick(this.currentCrypto, fiat)
-                .then(price => {
-                    this.latestPrice = price;
-                    console.log(price);
-                });
-            }
-        });
+        if (this.currentCrypto) {
+            this.storage.get("myFiatCurrency")
+            .then(fiat => {
+                if (fiat) {
+                    this.loader.start(200);
+                    this.coinService.getMarketTick(this.currentCrypto, fiat)
+                    .then(price => {
+                        this.latestPrice = price;
+                        this.loader.finish();
+                        console.log(price);
+                    });
+                }
+            });
+        }
     }
 
     changeCoin(coin) {

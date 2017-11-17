@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
-import { NavController, MenuController } from 'ionic-angular';
+import { NavController, MenuController, PopoverController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Observable, Subscription } from 'rxjs/Rx';
+
+import { SettingsPage } from '../settings/settings';
 
 import { CoinGatewayServiceProvider } from '../../providers/coin-gateway-service/coin-gateway-service';
 
 import { DelayedLoadingAnimationComponent } from '../../components/delayed-loading-animation/delayed-loading-animation';
+
+import { AppState } from '../../app/app.global';
 
 @Component({
     selector: 'page-home',
@@ -22,7 +26,7 @@ export class HomePage {
         { name: "Litecoin", code: "LTC" },
         { name: "Dogecoin", code: "DOGE" },
         { name: "Ripple", code: "XRP" }
-    ]
+    ];
 
     timerSubscription: Subscription;
     currentCrypto: string;
@@ -32,8 +36,10 @@ export class HomePage {
         public navCtrl: NavController,
         private storage: Storage,
         private menuCtrl: MenuController,
+        private popoverCtrl: PopoverController,
         private loader: DelayedLoadingAnimationComponent,
-        private coinService: CoinGatewayServiceProvider
+        private coinService: CoinGatewayServiceProvider,
+        public global: AppState
     ) {
         this.setDefaults();
     }
@@ -44,17 +50,26 @@ export class HomePage {
         this.menuCtrl.open("left");
     }
 
+    ionViewDidLeave() {
+        this.timerSubscription.unsubscribe();
+    }
+
     setDefaults() {
         this.storage.get("defaultsSet")
         .then(status => {
             if (!status) {
                 this.storage.set("defaultsSet", true);
+                this.storage.set("theme", "light-theme");
                 this.storage.set("myFiatCurrency", "AUD")
                 .then(() => {
                     this.setSubscriptions();
                 });
             } else {
-                this.setSubscriptions();
+                this.storage.get("theme")
+                .then(theme => {
+                    this.global.set("theme", theme);
+                    this.setSubscriptions();
+                });
             }
         });
     }
@@ -86,6 +101,13 @@ export class HomePage {
             this.currentCrypto = coin.code;
             this.getCurrentPrice();
         }
+    }
+
+    openSettings(event) {
+        let popover = this.popoverCtrl.create(SettingsPage);
+        popover.present({
+            ev: event
+        });
     }
 
 }

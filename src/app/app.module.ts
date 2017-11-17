@@ -11,12 +11,16 @@ import { DelayedLoadingAnimationComponent } from '../components/delayed-loading-
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { SettingsPage } from '../pages/settings/settings';
 import { CoinGatewayServiceProvider } from '../providers/coin-gateway-service/coin-gateway-service';
+
+import { AppState } from './app.global';
 
 @NgModule({
     declarations: [
         MyApp,
-        HomePage
+        HomePage,
+        SettingsPage
     ],
     imports: [
         BrowserModule,
@@ -30,9 +34,11 @@ import { CoinGatewayServiceProvider } from '../providers/coin-gateway-service/co
     bootstrap: [IonicApp],
     entryComponents: [
         MyApp,
-        HomePage
+        HomePage,
+        SettingsPage
     ],
     providers: [
+        AppState,
         DelayedLoadingAnimationComponent,
         StatusBar,
         SplashScreen,

@@ -12,3 +12,6 @@ Using BTC Markets API:
 
 Using Coinspot API
 - Dogecoin (DOGE)
+
+Using Crypto Compare API
+- Miota (IOTA)

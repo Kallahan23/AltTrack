@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 import { AppState } from '../../app/app.global';
@@ -23,7 +23,6 @@ export class SettingsPage {
     constructor(
         public navCtrl: NavController,
         public navParams: NavParams,
-        private alertCtrl: AlertController,
         private storage: Storage,
         public global: AppState
     ) {

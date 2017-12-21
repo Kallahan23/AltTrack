@@ -1,6 +1,6 @@
 {
   "name": "AltTrack",
-  "app_id": "",
+  "app_id": "2ac38ec7",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}

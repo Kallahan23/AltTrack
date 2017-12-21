@@ -1,5 +1,6 @@
 # AltTrack
 Cross-Platform Ionic App for tracking crypto currency prices.
+Defaults to AUD.
 
 ## Currently Supported Coins
 Using BTC Markets API:

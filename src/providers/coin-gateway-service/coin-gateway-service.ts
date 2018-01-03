@@ -85,7 +85,7 @@ export class CoinGatewayServiceProvider {
         let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/"
         let params: URLSearchParams = new URLSearchParams()
         params.set("convert", fiat)
-        params.set("limit", 50)
+        params.set("limit", "50")
         return this.http.get(api, {
             search: params
         })

@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
+import { Injectable } from '@angular/core'
+import { Http, URLSearchParams } from '@angular/http'
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/toPromise'
 
-import { Coin } from '../../entities/coin';
+import { Coin } from '../../entities/coin'
 
 /*
 Generated class for the CoinGatewayServiceProvider provider.
@@ -28,7 +28,7 @@ export class CoinGatewayServiceProvider {
     COINMARKETCAP_TICKER_URL = "/v1/ticker"
 
     constructor(public http: Http) {
-        console.log('Hello CoinGatewayServiceProvider Provider');
+        console.log('Hello CoinGatewayServiceProvider Provider')
     }
 
     getMarketTick(crypto: Coin, fiat: string): Promise<number> {
@@ -40,19 +40,19 @@ export class CoinGatewayServiceProvider {
             case "ETC":
             case "XRP":
             case "ETH": {
-                let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto.code + "/" + fiat + this.BTCMARKETS_TICK_PATH;
+                let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto.code + "/" + fiat + this.BTCMARKETS_TICK_PATH
                 return this.http.get(api)
                 .toPromise()
                 .then(response => response.json()["lastPrice"] as number)
-                .catch(this.handleError);
+                .catch(this.handleError)
             }
             // Coinspot
             case "DOGE": {
-                let api = this.COINSPOT_BASE_URL + this.COINSPOT_LATEST_PATH;
+                let api = this.COINSPOT_BASE_URL + this.COINSPOT_LATEST_PATH
                 return this.http.get(api)
                 .toPromise()
                 .then(response => Number(response.json()["prices"]["doge"]["last"]) as number)
-                .catch(this.handleError);
+                .catch(this.handleError)
             }
             // Coin Market Cap
             case "IOTA": {
@@ -71,8 +71,8 @@ export class CoinGatewayServiceProvider {
     }
 
     private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error); // for demo purposes only
-        return Promise.reject(error.message || error);
+        console.error('An error occurred', error) // for demo purposes only
+        return Promise.reject(error.message || error)
     }
 
 }

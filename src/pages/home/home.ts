@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
-import { NavController, MenuController, PopoverController } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
-import { Observable, Subscription } from 'rxjs/Rx';
+import { Component } from '@angular/core'
+import { NavController, MenuController, PopoverController } from 'ionic-angular'
+import { Storage } from '@ionic/storage'
+import { Observable, Subscription } from 'rxjs/Rx'
 
-import { SettingsPage } from '../settings/settings';
+import { SettingsPage } from '../settings/settings'
 
-import { CoinGatewayServiceProvider } from '../../providers/coin-gateway-service/coin-gateway-service';
+import { CoinGatewayServiceProvider } from '../../providers/coin-gateway-service/coin-gateway-service'
 
-import { DelayedLoadingAnimationComponent } from '../../components/delayed-loading-animation/delayed-loading-animation';
+import { DelayedLoadingAnimationComponent } from '../../components/delayed-loading-animation/delayed-loading-animation'
 
-import { AppState } from '../../app/app.global';
+import { AppState } from '../../app/app.global'
 
-import { Coin } from '../../entities/coin';
+import { Coin } from '../../entities/coin'
 
 @Component({
     selector: 'page-home',
@@ -28,11 +28,11 @@ export class HomePage {
         { name: "Ripple", code: "XRP", coinmarketcap_id: "ripple" },
         { name: "Litecoin", code: "LTC", coinmarketcap_id: "litecoin" },
         { name: "Dogecoin", code: "DOGE", coinmarketcap_id: "dogecoin" },
-    ];
+    ]
 
-    timerSubscription: Subscription;
-    currentCrypto: Coin;
-    latestPrice: number;
+    timerSubscription: Subscription
+    currentCrypto: Coin
+    latestPrice: number
 
     constructor(
         public navCtrl: NavController,
@@ -43,42 +43,42 @@ export class HomePage {
         private coinService: CoinGatewayServiceProvider,
         public global: AppState
     ) {
-        this.setDefaults();
+        this.setDefaults()
     }
 
     ionViewDidLoad() {
-        console.log('ionViewDidLoad HomePage');
-        this.menuCtrl.enable(true, "left");
-        this.menuCtrl.open("left");
+        console.log('ionViewDidLoad HomePage')
+        this.menuCtrl.enable(true, "left")
+        this.menuCtrl.open("left")
     }
 
     ionViewDidLeave() {
-        this.timerSubscription.unsubscribe();
+        this.timerSubscription.unsubscribe()
     }
 
     setDefaults() {
         this.storage.get("defaultsSet")
         .then(status => {
             if (!status) {
-                this.storage.set("defaultsSet", true);
-                this.storage.set("theme", "light-theme");
+                this.storage.set("defaultsSet", true)
+                this.storage.set("theme", "light-theme")
                 this.storage.set("myFiatCurrency", "AUD")
                 .then(() => {
-                    this.setSubscriptions();
-                });
+                    this.setSubscriptions()
+                })
             } else {
                 this.storage.get("theme")
                 .then(theme => {
-                    this.global.set("theme", theme);
-                    this.setSubscriptions();
-                });
+                    this.global.set("theme", theme)
+                    this.setSubscriptions()
+                })
             }
-        });
+        })
     }
 
     setSubscriptions() {
-        let timer = Observable.timer(20, 60000); // Interval set for 60 seconds (60000)
-        this.timerSubscription = timer.subscribe(t => this.getCurrentPrice());
+        let timer = Observable.timer(20, 60000) // Interval set for 60 seconds (60000)
+        this.timerSubscription = timer.subscribe(t => this.getCurrentPrice())
     }
 
     getCurrentPrice() {
@@ -86,30 +86,30 @@ export class HomePage {
             this.storage.get("myFiatCurrency")
             .then(fiat => {
                 if (fiat) {
-                    this.loader.start(200);
+                    this.loader.start(200)
                     this.coinService.getMarketTick(this.currentCrypto, fiat)
                     .then(price => {
-                        this.latestPrice = price;
-                        this.loader.finish();
-                        console.log(price);
-                    });
+                        this.latestPrice = price
+                        this.loader.finish()
+                        console.log(price)
+                    })
                 }
-            });
+            })
         }
     }
 
     changeCoin(coin) {
         if (this.currentCrypto != coin) {
-            this.currentCrypto = coin;
-            this.getCurrentPrice();
+            this.currentCrypto = coin
+            this.getCurrentPrice()
         }
     }
 
     openSettings(event) {
-        let popover = this.popoverCtrl.create(SettingsPage);
+        let popover = this.popoverCtrl.create(SettingsPage)
         popover.present({
             ev: event
-        });
+        })
     }
 
 }

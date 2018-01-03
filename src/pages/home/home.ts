@@ -11,25 +11,27 @@ import { DelayedLoadingAnimationComponent } from '../../components/delayed-loadi
 
 import { AppState } from '../../app/app.global';
 
+import { Coin } from '../../entities/coin';
+
 @Component({
     selector: 'page-home',
     templateUrl: 'home.html'
 })
 export class HomePage {
 
-    cryptoCurrencies = [
-        { name: "Ethereum", code: "ETH" },
-        { name: "Ethereum Classic", code: "ETC" },
-        { name: "Miota", code: "IOTA" },
-        { name: "Bitcoin", code: "BTC" },
-        { name: "Bitcoin Cash", code: "BCH" },
-        { name: "Litecoin", code: "LTC" },
-        { name: "Dogecoin", code: "DOGE" },
-        { name: "Ripple", code: "XRP" }
+    cryptoCurrencies: Coin[] = [
+        { name: "Bitcoin", code: "BTC", coinmarketcap_id: "bitcoin" },
+        { name: "Bitcoin Cash", code: "BCH", coinmarketcap_id: "bitcoin-gold" },
+        { name: "Ethereum", code: "ETH", coinmarketcap_id: "ethereum" },
+        { name: "Ethereum Classic", code: "ETC", coinmarketcap_id: "ethereum-classic" },
+        { name: "Miota", code: "IOTA", coinmarketcap_id: "iota" },
+        { name: "Ripple", code: "XRP", coinmarketcap_id: "ripple" },
+        { name: "Litecoin", code: "LTC", coinmarketcap_id: "litecoin" },
+        { name: "Dogecoin", code: "DOGE", coinmarketcap_id: "dogecoin" },
     ];
 
     timerSubscription: Subscription;
-    currentCrypto: string;
+    currentCrypto: Coin;
     latestPrice: number;
 
     constructor(
@@ -97,8 +99,8 @@ export class HomePage {
     }
 
     changeCoin(coin) {
-        if (this.currentCrypto != coin.code) {
-            this.currentCrypto = coin.code;
+        if (this.currentCrypto != coin) {
+            this.currentCrypto = coin;
             this.getCurrentPrice();
         }
     }

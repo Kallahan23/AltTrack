@@ -3,6 +3,8 @@ import { Http, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
+import { Coin } from '../../entities/coin';
+
 /*
 Generated class for the CoinGatewayServiceProvider provider.
 
@@ -12,53 +14,58 @@ and Angular DI.
 @Injectable()
 export class CoinGatewayServiceProvider {
 
-    CRYPTOCOMPARE_BASE_URL = "https://min-api.cryptocompare.com/data";
-    CRYPTOCOMPARE_PRICE_PATH = "/price";
+    CRYPTOCOMPARE_BASE_URL = "https://min-api.cryptocompare.com/data"
+    CRYPTOCOMPARE_PRICE_PATH = "/price"
 
+    COINSPOT_BASE_URL = "https://www.coinspot.com.au/pubapi"
+    COINSPOT_LATEST_PATH = "/latest"
 
-    COINSPOT_BASE_URL = "https://www.coinspot.com.au/pubapi";
-    COINSPOT_LATEST_PATH = "/latest";
+    BTCMARKETS_BASE_URL = "https://api.btcmarkets.net"
+    BTCMARKETS_MARKET_PATH = "/market"
+    BTCMARKETS_TICK_PATH = "/tick"
 
-    BTCMARKETS_BASE_URL = "https://api.btcmarkets.net";
-    BTCMARKETS_MARKET_PATH = "/market";
-    BTCMARKETS_TICK_PATH = "/tick";
+    COINMARKETCAP_BASE_URL = "https://api.coinmarketcap.com"
+    COINMARKETCAP_TICKER_URL = "/v1/ticker"
 
     constructor(public http: Http) {
         console.log('Hello CoinGatewayServiceProvider Provider');
     }
 
-    getMarketTick(crypto: string, fiat: string): Promise<number> {
-        switch (crypto) {
+    getMarketTick(crypto: Coin, fiat: string): Promise<number> {
+        switch (crypto.code) {
+            // BTC Markets
             case "BTC":
             case "BCH":
             case "LTC":
             case "ETC":
             case "XRP":
             case "ETH": {
-                let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto + "/" + fiat + this.BTCMARKETS_TICK_PATH;
+                let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto.code + "/" + fiat + this.BTCMARKETS_TICK_PATH;
                 return this.http.get(api)
                 .toPromise()
                 .then(response => response.json()["lastPrice"] as number)
                 .catch(this.handleError);
             }
+            // Coinspot
             case "DOGE": {
                 let api = this.COINSPOT_BASE_URL + this.COINSPOT_LATEST_PATH;
                 return this.http.get(api)
                 .toPromise()
-                .then(response => response.json()["prices"]["doge"]["last"] as number)
+                .then(response => Number(response.json()["prices"]["doge"]["last"]) as number)
                 .catch(this.handleError);
             }
+            // Coin Market Cap
             case "IOTA": {
-                let api = this.CRYPTOCOMPARE_BASE_URL + this.CRYPTOCOMPARE_PRICE_PATH;
-                let params: URLSearchParams = new URLSearchParams();
-                params.set("fsym", crypto);
-                params.set("tsyms", fiat);
+                // TODO use coinmarketcap id: basically lowercase coin name
+                let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/" + crypto.coinmarketcap_id + "/"
+                let params: URLSearchParams = new URLSearchParams()
+                params.set("convert", fiat)
                 return this.http.get(api, {
                     search: params
                 })
                 .toPromise()
-                .then(response => response.json()[fiat] as number)
-                .catch(this.handleError);
+                .then(response => Number(response.json()[0]["price_".concat(fiat.toLowerCase())]) as number)
+                .catch(this.handleError)
             }
         }
     }

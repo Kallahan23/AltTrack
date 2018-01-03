@@ -25,17 +25,20 @@
             <ion-title>
                 AltTrack
             </ion-title>
-            <ion-buttons end class="end-ion-buttons">
-            <button ion-button icon-only class="bigger-button" (click)="openSettings($event)">
-                <ion-icon name="cog"></ion-icon>
-            </button>
-        </ion-buttons>
+            <ion-buttons end>
+                <button ion-button icon-only class="bigger-button" (click)="openSettings($event)">
+                    <ion-icon name="cog"></ion-icon>
+                </button>
+            </ion-buttons>
         </ion-navbar>
     </ion-header>
 
     <ion-content padding>
-        <div *ngIf="currentCrypto" class="dash-content">
-            1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2-5' }}
+        <div *ngIf="currentCrypto && latestPrice < 1000" class="dash-content">
+            1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2-6' }}
+        </div>
+        <div *ngIf="currentCrypto && latestPrice >= 1000" class="dash-content">
+            1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2' }}
         </div>
         <div *ngIf="!currentCrypto" class="dash-content">
             Please select a crypto currency

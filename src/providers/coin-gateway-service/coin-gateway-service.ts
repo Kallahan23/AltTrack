@@ -31,15 +31,15 @@ export class CoinGatewayServiceProvider {
         console.log('Hello CoinGatewayServiceProvider Provider')
     }
 
-    getMarketTick(crypto: Coin, fiat: string): Promise<number> {
-        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/" + crypto.coinmarketcap_id
+    getMarketTick(crypto: Coin, base: string): Promise<number> {
+        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + crypto.coinmarketcap_id + "/"
         let params: URLSearchParams = new URLSearchParams()
-        params.set("convert", fiat)
+        params.set("convert", base)
         return this.http.get(api, {
             search: params
         })
         .toPromise()
-        .then(response => Number(response.json()[0]["price_".concat(fiat.toLowerCase())]) as number)
+        .then(response => Number(response.json()[0]["price_".concat(base.toLowerCase())]) as number)
         .catch(this.handleError)
 
         /********** Old Code ********/
@@ -51,7 +51,7 @@ export class CoinGatewayServiceProvider {
             case "ETC":
             case "XRP":
             case "ETH": {
-                let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto.code + "/" + fiat + this.BTCMARKETS_TICK_PATH
+                let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto.code + "/" + base + this.BTCMARKETS_TICK_PATH
                 return this.http.get(api)
                 .toPromise()
                 .then(response => response.json()["lastPrice"] as number)
@@ -70,21 +70,21 @@ export class CoinGatewayServiceProvider {
             case "IOTA": {
                 let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/" + crypto.coinmarketcap_id
                 let params: URLSearchParams = new URLSearchParams()
-                params.set("convert", fiat)
+                params.set("convert", base)
                 return this.http.get(api, {
                     search: params
                 })
                 .toPromise()
-                .then(response => Number(response.json()[0]["price_".concat(fiat.toLowerCase())]) as number)
+                .then(response => Number(response.json()[0]["price_".concat(base.toLowerCase())]) as number)
                 .catch(this.handleError)
             }
         }*/
     }
 
-    getAllCoins(fiat: string): Promise<any[]> {
+    getAllCoins(base: string): Promise<any[]> {
         let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/"
         let params: URLSearchParams = new URLSearchParams()
-        params.set("convert", fiat)
+        params.set("convert", base)
         params.set("limit", "50")
         return this.http.get(api, {
             search: params

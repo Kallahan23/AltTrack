@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { NavController, MenuController, PopoverController } from 'ionic-angular'
+import { NavController, MenuController, ModalController } from 'ionic-angular'
 import { Storage } from '@ionic/storage'
 import { Observable, Subscription } from 'rxjs/Rx'
 
@@ -41,7 +41,7 @@ export class HomePage {
         public navCtrl: NavController,
         private storage: Storage,
         private menuCtrl: MenuController,
-        private popoverCtrl: PopoverController,
+        private modalCtrl: ModalController,
         private loader: DelayedLoadingAnimationComponent,
         private coinService: CoinGatewayServiceProvider,
         public global: AppState
@@ -66,7 +66,7 @@ export class HomePage {
             if (!status) {
                 this.storage.set("defaultsSet", true)
                 this.storage.set("theme", "light-theme")
-                this.storage.set("myFiatCurrency", "AUD")
+                this.storage.set("baseCurrency", "AUD")
                 .then(() => {
                     this.setSubscriptions()
                 })
@@ -87,12 +87,12 @@ export class HomePage {
 
     getCurrentPrice() {
         if (this.currentCrypto) {
-            this.storage.get("myFiatCurrency")
-            .then(fiat => {
-                if (fiat) {
+            this.storage.get("baseCurrency")
+            .then(baseCurrency => {
+                if (baseCurrency) {
                     this.latestPrice = 0
                     this.loader.start(200)
-                    this.coinService.getMarketTick(this.currentCrypto, fiat)
+                    this.coinService.getMarketTick(this.currentCrypto, baseCurrency)
                     .then(price => {
                         this.latestPrice = price
                         this.loader.finish()
@@ -111,11 +111,11 @@ export class HomePage {
     }
 
     getAllCoins() {
-        this.storage.get("myFiatCurrency")
-        .then(fiat => {
-            if (fiat) {
+        this.storage.get("baseCurrency")
+        .then(baseCurrency => {
+            if (baseCurrency) {
                 this.loader.start(200)
-                this.coinService.getAllCoins(fiat)
+                this.coinService.getAllCoins(baseCurrency)
                 .then(coins => {
                     let tempCoins: Coin[] = []
                     coins.forEach(coin => {
@@ -135,8 +135,11 @@ export class HomePage {
     }
 
     openSettings(event) {
-        let popover = this.popoverCtrl.create(SettingsPage)
-        popover.present({
+        let modal = this.modalCtrl.create(SettingsPage)
+        modal.onDidDismiss(data => {
+            this.getCurrentPrice()
+        })
+        modal.present({
             ev: event
         })
     }

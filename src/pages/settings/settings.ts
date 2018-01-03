@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { Component } from '@angular/core'
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular'
+import { Storage } from '@ionic/storage'
 
-import { AppState } from '../../app/app.global';
+import { AppState } from '../../app/app.global'
 
 /**
 * Generated class for the SettingsPage page.
@@ -18,37 +18,58 @@ import { AppState } from '../../app/app.global';
 })
 export class SettingsPage {
 
-    darkThemeSelected: boolean;
+    darkThemeSelected: boolean
+
+    baseCurrencies = [
+        "AUD",
+        "USD",
+        "BTC"
+    ]
+    baseSelected: string
 
     constructor(
         public navCtrl: NavController,
         public navParams: NavParams,
+        public viewCtrl: ViewController,
         private storage: Storage,
         public global: AppState
     ) {
     }
 
     ionViewDidLoad() {
-        console.log('ionViewDidLoad SettingsPage');
+        console.log('ionViewDidLoad SettingsPage')
         this.storage.get("theme")
         .then(theme => {
             if (theme === "dark-theme") {
-                this.darkThemeSelected = true;
+                this.darkThemeSelected = true
             }
-        });
+            this.storage.get("baseCurrency")
+            .then(baseCurrency => {
+                if (baseCurrency) {
+                    this.baseSelected = baseCurrency
+                }
+            })
+        })
     }
 
     changeTheme() {
         if (this.darkThemeSelected) {
-            this.global.set('theme', "dark-theme");
-            this.storage.set("theme", "dark-theme");
+            this.global.set("theme", "dark-theme")
+            this.storage.set("theme", "dark-theme")
 
         } else {
-            this.global.set('theme', "light-theme");
-            this.storage.set("theme", "light-theme");
+            this.global.set("theme", "light-theme")
+            this.storage.set("theme", "light-theme")
         }
     }
 
+    changeBase(base: string) {
+        this.global.set("baseCurrency", base)
+        this.storage.set("baseCurrency", base)
+    }
 
+    dismiss() {
+        this.viewCtrl.dismiss()
+    }
 
 }

@@ -38,11 +38,14 @@ export class SettingsPage {
 
     ionViewDidLoad() {
         console.log('ionViewDidLoad SettingsPage')
+        // TODO concurrent promises more efficient
+
         this.storage.get("theme")
         .then(theme => {
             if (theme === "dark-theme") {
                 this.darkThemeSelected = true
             }
+
             this.storage.get("baseCurrency")
             .then(baseCurrency => {
                 if (baseCurrency) {

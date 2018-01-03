@@ -74,7 +74,13 @@ export class HomePage {
                 this.storage.get("theme")
                 .then(theme => {
                     this.global.set("theme", theme)
-                    this.setSubscriptions()
+
+                    this.storage.get("baseCurrency")
+                    .then(base => {
+                        this.global.set("baseCurrency", base)
+
+                        this.setSubscriptions()
+                    })
                 })
             }
         })

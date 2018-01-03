@@ -34,12 +34,24 @@
     </ion-header>
 
     <ion-content padding>
-        <div *ngIf="currentCrypto && latestPrice < 1000" class="dash-content">
-            1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2-6' }}
+        <!-- TODO do this better! -->
+        <div *ngIf="global.state['baseCurrency'] === 'USD' || global.state['baseCurrency'] === 'AUD'">
+            <div *ngIf="currentCrypto && latestPrice < 1000" class="dash-content">
+                1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2-6' }}
+            </div>
+            <div *ngIf="currentCrypto && latestPrice >= 1000" class="dash-content">
+                1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2' }}
+            </div>
         </div>
-        <div *ngIf="currentCrypto && latestPrice >= 1000" class="dash-content">
-            1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2' }}
+        <div *ngIf="!(global.state['baseCurrency'] === 'USD' || global.state['baseCurrency'] === 'AUD')">
+            <div *ngIf="currentCrypto && latestPrice < 1000" class="dash-content">
+                1 {{ currentCrypto.code }} = {{ global.state['baseCurrency'] }} {{ latestPrice | number:'1.2-6' }}
+            </div>
+            <div *ngIf="currentCrypto && latestPrice >= 1000" class="dash-content">
+                1 {{ currentCrypto.code }} = {{ global.state['baseCurrency'] }} {{ latestPrice | number:'1.2' }}
+            </div>
         </div>
+
         <div *ngIf="!currentCrypto" class="dash-content">
             Please select a crypto currency
         </div>

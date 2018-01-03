@@ -19,16 +19,19 @@ import { Coin } from '../../entities/coin'
 })
 export class HomePage {
 
-    cryptoCurrencies: Coin[] = [
-        { name: "Bitcoin", code: "BTC", coinmarketcap_id: "bitcoin" },
-        { name: "Bitcoin Cash", code: "BCH", coinmarketcap_id: "bitcoin-gold" },
-        { name: "Ethereum", code: "ETH", coinmarketcap_id: "ethereum" },
-        { name: "Ethereum Classic", code: "ETC", coinmarketcap_id: "ethereum-classic" },
-        { name: "Miota", code: "IOTA", coinmarketcap_id: "iota" },
-        { name: "Ripple", code: "XRP", coinmarketcap_id: "ripple" },
-        { name: "Litecoin", code: "LTC", coinmarketcap_id: "litecoin" },
-        { name: "Dogecoin", code: "DOGE", coinmarketcap_id: "dogecoin" },
-    ]
+    // cryptoCurrencies: Coin[] = [
+    //     { name: "Bitcoin", code: "BTC", coinmarketcap_id: "bitcoin" },
+    //     { name: "Bitcoin Cash", code: "BCH", coinmarketcap_id: "bitcoin-cash" },
+    //     { name: "Bitcoin Gold", code: "BTG", coinmarketcap_id: "bitcoin-gold" },
+    //     { name: "Ethereum", code: "ETH", coinmarketcap_id: "ethereum" },
+    //     { name: "Ethereum Classic", code: "ETC", coinmarketcap_id: "ethereum-classic" },
+    //     { name: "Miota", code: "IOTA", coinmarketcap_id: "iota" },
+    //     { name: "Ripple", code: "XRP", coinmarketcap_id: "ripple" },
+    //     { name: "Litecoin", code: "LTC", coinmarketcap_id: "litecoin" },
+    //     { name: "Dogecoin", code: "DOGE", coinmarketcap_id: "dogecoin" },
+    // ]
+
+    cryptoCurrencies: Coin[]
 
     timerSubscription: Subscription
     currentCrypto: Coin
@@ -44,6 +47,7 @@ export class HomePage {
         public global: AppState
     ) {
         this.setDefaults()
+        this.getAllCoins()
     }
 
     ionViewDidLoad() {
@@ -77,7 +81,7 @@ export class HomePage {
     }
 
     setSubscriptions() {
-        let timer = Observable.timer(20, 60000) // Interval set for 60 seconds (60000)
+        let timer = Observable.timer(20, 60000) // Interval set for 60 seconds (60000 ms)
         this.timerSubscription = timer.subscribe(t => this.getCurrentPrice())
     }
 
@@ -86,6 +90,7 @@ export class HomePage {
             this.storage.get("myFiatCurrency")
             .then(fiat => {
                 if (fiat) {
+                    this.latestPrice = 0
                     this.loader.start(200)
                     this.coinService.getMarketTick(this.currentCrypto, fiat)
                     .then(price => {
@@ -103,6 +108,30 @@ export class HomePage {
             this.currentCrypto = coin
             this.getCurrentPrice()
         }
+    }
+
+    getAllCoins() {
+        this.storage.get("myFiatCurrency")
+        .then(fiat => {
+            if (fiat) {
+                this.loader.start(200)
+                this.coinService.getAllCoins(fiat)
+                .then(coins => {
+                    let tempCoins: Coin[] = []
+                    coins.forEach(coin => {
+                        let newCoin: Coin = {
+                            name: coin.name,
+                            code: coin.symbol,
+                            rank: coin.rank,
+                            coinmarketcap_id: coin.id
+                        }
+                        tempCoins.push(newCoin)
+                    })
+                    this.cryptoCurrencies = tempCoins
+                    this.loader.finish()
+                })
+            }
+        })
     }
 
     openSettings(event) {

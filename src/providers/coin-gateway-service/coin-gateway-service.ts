@@ -25,14 +25,25 @@ export class CoinGatewayServiceProvider {
     BTCMARKETS_TICK_PATH = "/tick"
 
     COINMARKETCAP_BASE_URL = "https://api.coinmarketcap.com"
-    COINMARKETCAP_TICKER_URL = "/v1/ticker"
+    COINMARKETCAP_TICKER_URL = "/v1/ticker/"
 
     constructor(public http: Http) {
         console.log('Hello CoinGatewayServiceProvider Provider')
     }
 
     getMarketTick(crypto: Coin, fiat: string): Promise<number> {
-        switch (crypto.code) {
+        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/" + crypto.coinmarketcap_id
+        let params: URLSearchParams = new URLSearchParams()
+        params.set("convert", fiat)
+        return this.http.get(api, {
+            search: params
+        })
+        .toPromise()
+        .then(response => Number(response.json()[0]["price_".concat(fiat.toLowerCase())]) as number)
+        .catch(this.handleError)
+
+        /********** Old Code ********/
+        /*switch (crypto.code) {
             // BTC Markets
             case "BTC":
             case "BCH":
@@ -55,9 +66,9 @@ export class CoinGatewayServiceProvider {
                 .catch(this.handleError)
             }
             // Coin Market Cap
+            case "BTG":
             case "IOTA": {
-                // TODO use coinmarketcap id: basically lowercase coin name
-                let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/" + crypto.coinmarketcap_id + "/"
+                let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/" + crypto.coinmarketcap_id
                 let params: URLSearchParams = new URLSearchParams()
                 params.set("convert", fiat)
                 return this.http.get(api, {
@@ -67,7 +78,20 @@ export class CoinGatewayServiceProvider {
                 .then(response => Number(response.json()[0]["price_".concat(fiat.toLowerCase())]) as number)
                 .catch(this.handleError)
             }
-        }
+        }*/
+    }
+
+    getAllCoins(fiat: string): Promise<any[]> {
+        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/"
+        let params: URLSearchParams = new URLSearchParams()
+        params.set("convert", fiat)
+        params.set("limit", 50)
+        return this.http.get(api, {
+            search: params
+        })
+        .toPromise()
+        .then(response => response.json())
+        .catch(this.handleError)
     }
 
     private handleError(error: any): Promise<any> {

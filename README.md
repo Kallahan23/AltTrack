@@ -2,17 +2,8 @@
 Cross-Platform Ionic App for tracking crypto currency prices.
 Defaults to AUD.
 
-## Currently Supported Coins
-Using BTC Markets API:
-- Bitcoin (BTC)
-- Bitcoin Cash (BCH)
-- Ethereum (ETH)
-- Ethereum Classic (ETC)
-- Litecoin (LTC)
-- Ripple (XRP)
+## Supported Coins
+Using the CoinMarketCap API to display the top 50 coins based on market cap
 
-Using Coinspot API
-- Dogecoin (DOGE)
-
-Using CoinMarketCap API
-- Miota (IOTA)
+## Ionic
+This app can be previewed using Ionic View id: 2ac38ec7

@@ -32,9 +32,9 @@ export class CoinGatewayServiceProvider {
     }
 
     getMarketTick(crypto: Coin, base: string): Promise<number> {
-        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + crypto.coinmarketcap_id + "/"
-        let params: URLSearchParams = new URLSearchParams()
-        params.set("convert", base)
+        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + crypto.coinmarketcap_id + "/";
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("convert", base);
         return this.http.get(api, {
             search: params
         })
@@ -82,10 +82,10 @@ export class CoinGatewayServiceProvider {
     }
 
     getAllCoins(base: string): Promise<any[]> {
-        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/"
-        let params: URLSearchParams = new URLSearchParams()
-        params.set("convert", base)
-        params.set("limit", "50")
+        let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/";
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("convert", base);
+        params.set("limit", "100");
         return this.http.get(api, {
             search: params
         })
@@ -95,8 +95,8 @@ export class CoinGatewayServiceProvider {
     }
 
     private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error) // for demo purposes only
-        return Promise.reject(error.message || error)
+        console.error('An error occurred', error); // for demo purposes only
+        return Promise.reject(error.message || error);
     }
 
 }

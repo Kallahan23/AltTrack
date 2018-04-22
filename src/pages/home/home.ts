@@ -27,7 +27,7 @@ export class HomePage {
     latestPrice: number;
 
     portfolios: Portfolio[];
-    portfolioCoinsBought: number;
+    portfolioCoinsOwned: number;
     portfolioAmountInvested: number;
 
     constructor(
@@ -162,10 +162,10 @@ export class HomePage {
     }
 
     updatePortfolio() {
-        if (this.currentCrypto && this.portfolioCoinsBought && this.portfolioAmountInvested && this.portfolioCoinsBought + this.portfolioAmountInvested > 0) {
+        if (this.currentCrypto && this.portfolioCoinsOwned && this.portfolioAmountInvested && this.portfolioCoinsOwned + this.portfolioAmountInvested > 0) {
             let newPortfolio: Portfolio = {
                 code: this.currentCrypto.code,
-                coinsBought: this.portfolioCoinsBought,
+                coinsOwned: this.portfolioCoinsOwned,
                 amountInvested: this.portfolioAmountInvested
             };
             if (this.portfolios) {
@@ -195,16 +195,16 @@ export class HomePage {
             this.portfolios.forEach(portfolio => {
                 if (portfolio.code === coinCode) {
                     exists = true;
-                    this.portfolioCoinsBought = portfolio.coinsBought;
+                    this.portfolioCoinsOwned = portfolio.coinsOwned;
                     this.portfolioAmountInvested = portfolio.amountInvested;
                 }
             });
             if (!exists) {
-                this.portfolioCoinsBought = null;
+                this.portfolioCoinsOwned = null;
                 this.portfolioAmountInvested = null;
             }
         } else {
-            this.portfolioCoinsBought = null;
+            this.portfolioCoinsOwned = null;
             this.portfolioAmountInvested = null;
         }
     }
@@ -215,10 +215,26 @@ export class HomePage {
         });
         if (index > -1) {
             this.portfolios.splice(index);
-            this.portfolioCoinsBought = null;
+            this.portfolioCoinsOwned = null;
             this.portfolioAmountInvested = null;
             this.storage.set("portfolios", this.portfolios);
         }
+    }
+
+    breakEvenPoint(): number {
+        if (this.portfolioAmountInvested && this.portfolioCoinsOwned) {
+            return this.portfolioAmountInvested / this.portfolioCoinsOwned;
+        } else {
+            return 0;
+        }
+    }
+
+    walletValue(): number {
+        return this.latestPrice * this.portfolioCoinsOwned;
+    }
+
+    profit(): number {
+        return this.walletValue() - this.portfolioAmountInvested;
     }
 
 }

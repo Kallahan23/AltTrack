@@ -63,14 +63,23 @@
 
         <div *ngIf="currentCrypto" class="portfolio-content">
             <ion-item>
-                <ion-label color="primary">Coins Owned:</ion-label>
-                <ion-input (focusout)="updatePortfolio()" [(ngModel)]="portfolioCoinsBought" type="number" step="0.00000001" placeholder="The number of coins owned"></ion-input>
+                <ion-label color="primary" stacked>Coins Owned ({{ currentCrypto.code }})</ion-label>
+                <ion-input (focusout)="updatePortfolio()" [(ngModel)]="portfolioCoinsOwned" type="number" step="0.00000001" placeholder="The number of coins owned"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label color="primary">Amount Invested:</ion-label>
+                <ion-label color="primary" stacked>Amount Invested ({{ global.state['baseCurrency'] }})</ion-label>
                 <ion-input (focusout)="updatePortfolio()" [(ngModel)]="portfolioAmountInvested" type="number" step="0.01" placeholder="The total amount of {{global.state['baseCurrency']}} invested"></ion-input>
             </ion-item>
-
+            <p>
+                Break Even Point ({{ global.state['baseCurrency'] }}): {{ breakEvenPoint() | currency:'USD':symbol:'1.2' }}
+            </p>
+            <p>
+                Current Wallet Value ({{ global.state['baseCurrency'] }}): {{ walletValue() | currency:'USD':symbol:'1.2' }}
+            </p>
+            <p>
+                Profit ({{ global.state['baseCurrency'] }}): {{ profit() | currency:'USD':symbol:'1.2' }}
+            </p>
+            <hr>
             <button ion-button (click)="clearCurrentPortfolio()" color="danger">Clear</button>
         </div>
 

@@ -1,5 +1,5 @@
 export interface Portfolio {
     code: string
-    coinsBought: number
+    coinsOwned: number
     amountInvested: number
 }

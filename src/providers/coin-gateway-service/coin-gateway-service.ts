@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
 import { Coin } from '../../entities/coin';
@@ -29,9 +29,7 @@ export class CoinGatewayServiceProvider {
             "convert": base
         };
 
-        return this.http.get<number>(api, {
-            params: params
-        }).pipe(
+        return this.http.get<number>(api, { params: params }).pipe(
             map(response => Number(response[0]["price_".concat(base.toLowerCase())]) as number),
             catchError(this.handleError('getMarketTick', 0))
         )
@@ -40,13 +38,12 @@ export class CoinGatewayServiceProvider {
     getAllCoins(base: string): Observable<any[]> {
         let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/";
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("convert", base);
-        params.set("limit", "100");
+        let params = {
+            "convert": base,
+            "limit": "100"
+        };
 
-        return this.http.get(api, {
-            params: params
-        }).pipe(
+        return this.http.get(api, { params: params }).pipe(
             catchError(this.handleError('getMarketTick', 0))
         )
     }

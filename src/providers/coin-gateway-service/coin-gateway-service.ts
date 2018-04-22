@@ -43,7 +43,7 @@ export class CoinGatewayServiceProvider {
             "limit": "100"
         };
 
-        return this.http.get(api, { params: params }).pipe(
+        return this.http.get<any[]>(api, { params: params }).pipe(
             catchError(this.handleError('getMarketTick', 0))
         )
     }

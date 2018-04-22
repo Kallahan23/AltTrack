@@ -1,18 +1,18 @@
-import { Component } from '@angular/core'
-import { NavController, MenuController, ModalController } from 'ionic-angular'
-import { Storage } from '@ionic/storage'
-import { Observable, Subscription } from 'rxjs/Rx'
+import { Component } from '@angular/core';
+import { NavController, MenuController, ModalController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
+import { Observable, Subscription } from 'rxjs/Rx';
 
-import { SettingsPage } from '../settings/settings'
+import { SettingsPage } from '../settings/settings';
 
-import { CoinGatewayServiceProvider } from '../../providers/coin-gateway-service/coin-gateway-service'
+import { CoinGatewayServiceProvider } from '../../providers/coin-gateway-service/coin-gateway-service';
 
-import { DelayedLoadingAnimationComponent } from '../../components/delayed-loading-animation/delayed-loading-animation'
+import { DelayedLoadingAnimationComponent } from '../../components/delayed-loading-animation/delayed-loading-animation';
 
-import { AppState } from '../../app/app.global'
+import { AppState } from '../../app/app.global';
 
-import { Coin } from '../../entities/coin'
-import { Portfolio } from '../../entities/portfolio'
+import { Coin } from '../../entities/coin';
+import { Portfolio } from '../../entities/portfolio';
 
 @Component({
     selector: 'page-home',
@@ -20,15 +20,15 @@ import { Portfolio } from '../../entities/portfolio'
 })
 export class HomePage {
 
-    cryptoCurrencies: Coin[]
+    cryptoCurrencies: Coin[];
 
-    timerSubscription: Subscription
-    currentCrypto: Coin
-    latestPrice: number
+    timerSubscription: Subscription;
+    currentCrypto: Coin;
+    latestPrice: number;
 
-    portfolios: Portfolio[]
-    portfolioCoinsBought: number
-    portfolioAmountInvested: number
+    portfolios: Portfolio[];
+    portfolioCoinsBought: number;
+    portfolioAmountInvested: number;
 
     constructor(
         public navCtrl: NavController,
@@ -87,76 +87,76 @@ export class HomePage {
     }
 
     setSubscriptions() {
-        let timer = Observable.timer(20, 60000) // Interval set for 60 seconds (60000 ms)
-        this.timerSubscription = timer.subscribe(t => this.getCurrentPrice())
+        let timer = Observable.timer(20, 60000); // Interval set for 60 seconds (60000 ms)
+        this.timerSubscription = timer.subscribe(t => this.getCurrentPrice());
     }
 
     getCurrentPrice() {
         if (this.currentCrypto) {
             let baseCurrency = this.global.get("baseCurrency");
             if (baseCurrency) {
-                this.latestPrice = 0
-                this.loader.start(200)
+                this.latestPrice = 0;
+                this.loader.start(200);
                 this.coinService.getMarketTick(this.currentCrypto, baseCurrency)
                 .then(price => {
-                    this.latestPrice = price
-                    this.loader.finish()
-                    console.log(price)
+                    this.latestPrice = price;
+                    this.loader.finish();
+                    console.log(price);
                 })
             } else {
-                console.log("Warning: no base currency set.")
+                console.log("Warning: no base currency set.");
             }
         }
     }
 
     changeCoin(coin) {
         if (this.currentCrypto != coin) {
-            this.updatePortfolio()
-            this.currentCrypto = coin
-            this.getCurrentPrice()
-            this.changePortfolio(this.currentCrypto.code)
+            // this.updatePortfolio();
+            this.currentCrypto = coin;
+            this.getCurrentPrice();
+            this.changePortfolio(this.currentCrypto.code);
         }
     }
 
     getAllCoins() {
         let baseCurrency = this.global.get("baseCurrency");
         if (baseCurrency) {
-            this.loader.start(200)
+            this.loader.start(200);
             this.coinService.getAllCoins(baseCurrency)
             .then(coins => {
-                let tempCoins: Coin[] = []
+                let tempCoins: Coin[] = [];
                 coins.forEach(coin => {
                     let newCoin: Coin = {
                         name: coin.name,
                         code: coin.symbol,
                         rank: coin.rank,
                         coinmarketcap_id: coin.id
-                    }
-                    tempCoins.push(newCoin)
+                    };
+                    tempCoins.push(newCoin);
                 })
-                this.cryptoCurrencies = tempCoins
-                this.loader.finish()
+                this.cryptoCurrencies = tempCoins;
+                this.loader.finish();
             })
         } else {
-            console.log("Warning: no base currency set.")
+            console.log("Warning: no base currency set.");
         }
     }
 
     openSettings(event) {
         let modal = this.modalCtrl.create(SettingsPage)
         modal.onDidDismiss(data => {
-            this.getCurrentPrice()
-        })
+            this.getCurrentPrice();
+        });
         modal.present({
             ev: event
-        })
+        });
     }
 
     getPortfolios() {
         this.storage.get("portfolios")
         .then(portfolios => {
             if (portfolios) {
-                this.portfolios = portfolios
+                this.portfolios = portfolios;
             }
         })
     }
@@ -183,7 +183,7 @@ export class HomePage {
                     this.portfolios.push(newPortfolio);
                 }
             } else {
-                this.portfolios = [ newPortfolio ]
+                this.portfolios = [ newPortfolio ];
             }
             this.storage.set("portfolios", this.portfolios);
         }
@@ -206,6 +206,18 @@ export class HomePage {
         } else {
             this.portfolioCoinsBought = null;
             this.portfolioAmountInvested = null;
+        }
+    }
+
+    clearCurrentPortfolio() {
+        let index = this.portfolios.findIndex(portfolio => {
+            return portfolio.code === this.currentCrypto.code;
+        });
+        if (index > -1) {
+            this.portfolios.splice(index);
+            this.portfolioCoinsBought = null;
+            this.portfolioAmountInvested = null;
+            this.storage.set("portfolios", this.portfolios);
         }
     }
 

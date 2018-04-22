@@ -64,12 +64,14 @@
         <div *ngIf="currentCrypto" class="portfolio-content">
             <ion-item>
                 <ion-label color="primary">Coins Owned:</ion-label>
-                <ion-input [(ngModel)]="portfolioCoinsBought" type="number" step="0.00000001" placeholder="The number of coins owned"></ion-input>
+                <ion-input (focusout)="updatePortfolio()" [(ngModel)]="portfolioCoinsBought" type="number" step="0.00000001" placeholder="The number of coins owned"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label color="primary">Amount Invested:</ion-label>
-                <ion-input [(ngModel)]="portfolioAmountInvested" type="number" step="0.01" placeholder="The total amount of {{global.state['baseCurrency']}} invested"></ion-input>
+                <ion-input (focusout)="updatePortfolio()" [(ngModel)]="portfolioAmountInvested" type="number" step="0.01" placeholder="The total amount of {{global.state['baseCurrency']}} invested"></ion-input>
             </ion-item>
+
+            <button ion-button (click)="clearCurrentPortfolio()" color="danger">Clear</button>
         </div>
 
     </ion-content>

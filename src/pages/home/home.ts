@@ -12,6 +12,7 @@ import { DelayedLoadingAnimationComponent } from '../../components/delayed-loadi
 import { AppState } from '../../app/app.global'
 
 import { Coin } from '../../entities/coin'
+import { Portfolio } from '../../entities/portfolio'
 
 @Component({
     selector: 'page-home',
@@ -25,6 +26,10 @@ export class HomePage {
     currentCrypto: Coin
     latestPrice: number
 
+    portfolios: Portfolio[]
+    portfolioCoinsBought: number
+    portfolioAmountInvested: number
+
     constructor(
         public navCtrl: NavController,
         private storage: Storage,
@@ -34,34 +39,34 @@ export class HomePage {
         private coinService: CoinGatewayServiceProvider,
         public global: AppState
     ) {
-        console.log("constructor")
-        this.setDefaults()
-        this.getAllCoins()
+        this.configureSettings();
+        this.getPortfolios();
+        this.getAllCoins();
     }
 
     ionViewDidLoad() {
-        console.log('ionViewDidLoad HomePage')
-        this.menuCtrl.enable(true, "left")
-        this.menuCtrl.open("left")
+        console.log('ionViewDidLoad HomePage');
+        this.menuCtrl.enable(true, "left");
+        this.menuCtrl.open("left");
     }
 
     ionViewDidLeave() {
-        this.timerSubscription.unsubscribe()
+        this.timerSubscription.unsubscribe();
     }
 
-    setDefaults() {
+    configureSettings() {
         this.storage.get("defaultsSet")
-        .then(status => {
-            if (!status) {
+        .then(defaultsSet => {
+            if (!defaultsSet) {
                 this.storage.set("defaultsSet", true)
                 .then(() => {
                     this.storage.set("theme", "light-theme")
                     .then((theme) => {
                         this.storage.set("baseCurrency", "AUD")
                         .then((base) => {
-                            this.setSubscriptions()
                             this.global.set("theme", theme);
                             this.global.set("baseCurrency", base);
+                            this.setSubscriptions();
                         })
                     })
                 })
@@ -106,8 +111,10 @@ export class HomePage {
 
     changeCoin(coin) {
         if (this.currentCrypto != coin) {
+            this.updatePortfolio()
             this.currentCrypto = coin
             this.getCurrentPrice()
+            this.changePortfolio(this.currentCrypto.code)
         }
     }
 
@@ -143,6 +150,63 @@ export class HomePage {
         modal.present({
             ev: event
         })
+    }
+
+    getPortfolios() {
+        this.storage.get("portfolios")
+        .then(portfolios => {
+            if (portfolios) {
+                this.portfolios = portfolios
+            }
+        })
+    }
+
+    updatePortfolio() {
+        if (this.currentCrypto && this.portfolioCoinsBought && this.portfolioAmountInvested && this.portfolioCoinsBought + this.portfolioAmountInvested > 0) {
+            let newPortfolio: Portfolio = {
+                code: this.currentCrypto.code,
+                coinsBought: this.portfolioCoinsBought,
+                amountInvested: this.portfolioAmountInvested
+            };
+            if (this.portfolios) {
+                let exists = false;
+                let existsAt = 0;
+                this.portfolios.forEach((portfolio, index) => {
+                    if (portfolio.code === newPortfolio.code) {
+                        exists = true;
+                        existsAt = index;
+                    }
+                });
+                if (exists) {
+                    this.portfolios[existsAt] = newPortfolio;
+                } else {
+                    this.portfolios.push(newPortfolio);
+                }
+            } else {
+                this.portfolios = [ newPortfolio ]
+            }
+            this.storage.set("portfolios", this.portfolios);
+        }
+    }
+
+    changePortfolio(coinCode: string) {
+        if (this.portfolios) {
+            let exists = false;
+            this.portfolios.forEach(portfolio => {
+                if (portfolio.code === coinCode) {
+                    exists = true;
+                    this.portfolioCoinsBought = portfolio.coinsBought;
+                    this.portfolioAmountInvested = portfolio.amountInvested;
+                }
+            });
+            if (!exists) {
+                this.portfolioCoinsBought = null;
+                this.portfolioAmountInvested = null;
+            }
+        } else {
+            this.portfolioCoinsBought = null;
+            this.portfolioAmountInvested = null;
+        }
     }
 
 }

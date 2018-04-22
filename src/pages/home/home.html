@@ -34,27 +34,44 @@
     </ion-header>
 
     <ion-content padding>
-        <!-- TODO do this better! -->
-        <div *ngIf="global.state['baseCurrency'] === 'USD' || global.state['baseCurrency'] === 'AUD'">
-            <div *ngIf="currentCrypto && latestPrice < 1000" class="dash-content">
-                1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2-6' }}
+        <div class="dash-content">
+            <div *ngIf="currentCrypto">
+                <!-- If baseCurrency is BTC -->
+                <div *ngIf="global.state['baseCurrency'] === 'BTC'">
+                    <div *ngIf="currentCrypto && latestPrice < 1000">
+                        1 {{ currentCrypto.code }} = {{ global.state['baseCurrency'] }} {{ latestPrice | number:'1.2-6' }}
+                    </div>
+                    <div *ngIf="currentCrypto && latestPrice >= 1000">
+                        1 {{ currentCrypto.code }} = {{ global.state['baseCurrency'] }} {{ latestPrice | number:'1.2' }}
+                    </div>
+                </div>
+                <!-- If baseCurrency is FIAT -->
+                <div *ngIf="!(global.state['baseCurrency'] === 'BTC')">
+                    <div *ngIf="currentCrypto && latestPrice < 1000">
+                        1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2-6' }}
+                    </div>
+                    <div *ngIf="currentCrypto && latestPrice >= 1000">
+                        1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2' }}
+                    </div>
+                </div>
             </div>
-            <div *ngIf="currentCrypto && latestPrice >= 1000" class="dash-content">
-                1 {{ currentCrypto.code }} = {{ latestPrice | currency:'USD':symbol:'1.2' }}
-            </div>
-        </div>
-        <div *ngIf="!(global.state['baseCurrency'] === 'USD' || global.state['baseCurrency'] === 'AUD')">
-            <div *ngIf="currentCrypto && latestPrice < 1000" class="dash-content">
-                1 {{ currentCrypto.code }} = {{ global.state['baseCurrency'] }} {{ latestPrice | number:'1.2-6' }}
-            </div>
-            <div *ngIf="currentCrypto && latestPrice >= 1000" class="dash-content">
-                1 {{ currentCrypto.code }} = {{ global.state['baseCurrency'] }} {{ latestPrice | number:'1.2' }}
+
+            <div *ngIf="!currentCrypto">
+                Welcome to AltTrack<br>Please select a crypto currency
             </div>
         </div>
 
-        <div *ngIf="!currentCrypto" class="dash-content">
-            Please select a crypto currency
+        <div *ngIf="currentCrypto" class="portfolio-content">
+            <ion-item>
+                <ion-label color="primary">Coins Owned:</ion-label>
+                <ion-input [(ngModel)]="portfolioCoinsBought" type="number" step="0.00000001" placeholder="The number of coins owned"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label color="primary">Amount Invested:</ion-label>
+                <ion-input [(ngModel)]="portfolioAmountInvested" type="number" step="0.01" placeholder="The total amount of {{global.state['baseCurrency']}} invested"></ion-input>
+            </ion-item>
         </div>
+
     </ion-content>
 
 </ion-split-pane>

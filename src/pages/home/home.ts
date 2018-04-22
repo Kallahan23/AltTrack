@@ -19,18 +19,6 @@ import { Coin } from '../../entities/coin'
 })
 export class HomePage {
 
-    // cryptoCurrencies: Coin[] = [
-    //     { name: "Bitcoin", code: "BTC", coinmarketcap_id: "bitcoin" },
-    //     { name: "Bitcoin Cash", code: "BCH", coinmarketcap_id: "bitcoin-cash" },
-    //     { name: "Bitcoin Gold", code: "BTG", coinmarketcap_id: "bitcoin-gold" },
-    //     { name: "Ethereum", code: "ETH", coinmarketcap_id: "ethereum" },
-    //     { name: "Ethereum Classic", code: "ETC", coinmarketcap_id: "ethereum-classic" },
-    //     { name: "Miota", code: "IOTA", coinmarketcap_id: "iota" },
-    //     { name: "Ripple", code: "XRP", coinmarketcap_id: "ripple" },
-    //     { name: "Litecoin", code: "LTC", coinmarketcap_id: "litecoin" },
-    //     { name: "Dogecoin", code: "DOGE", coinmarketcap_id: "dogecoin" },
-    // ]
-
     cryptoCurrencies: Coin[]
 
     timerSubscription: Subscription
@@ -46,6 +34,7 @@ export class HomePage {
         private coinService: CoinGatewayServiceProvider,
         public global: AppState
     ) {
+        console.log("constructor")
         this.setDefaults()
         this.getAllCoins()
     }
@@ -65,21 +54,27 @@ export class HomePage {
         .then(status => {
             if (!status) {
                 this.storage.set("defaultsSet", true)
-                this.storage.set("theme", "light-theme")
-                this.storage.set("baseCurrency", "AUD")
                 .then(() => {
-                    this.setSubscriptions()
+                    this.storage.set("theme", "light-theme")
+                    .then((theme) => {
+                        this.storage.set("baseCurrency", "AUD")
+                        .then((base) => {
+                            this.setSubscriptions()
+                            this.global.set("theme", theme);
+                            this.global.set("baseCurrency", base);
+                        })
+                    })
                 })
             } else {
                 this.storage.get("theme")
                 .then(theme => {
-                    this.global.set("theme", theme)
+                    this.global.set("theme", theme);
 
                     this.storage.get("baseCurrency")
                     .then(base => {
-                        this.global.set("baseCurrency", base)
+                        this.global.set("baseCurrency", base);
 
-                        this.setSubscriptions()
+                        this.setSubscriptions();
                     })
                 })
             }
@@ -93,19 +88,19 @@ export class HomePage {
 
     getCurrentPrice() {
         if (this.currentCrypto) {
-            this.storage.get("baseCurrency")
-            .then(baseCurrency => {
-                if (baseCurrency) {
-                    this.latestPrice = 0
-                    this.loader.start(200)
-                    this.coinService.getMarketTick(this.currentCrypto, baseCurrency)
-                    .then(price => {
-                        this.latestPrice = price
-                        this.loader.finish()
-                        console.log(price)
-                    })
-                }
-            })
+            let baseCurrency = this.global.get("baseCurrency");
+            if (baseCurrency) {
+                this.latestPrice = 0
+                this.loader.start(200)
+                this.coinService.getMarketTick(this.currentCrypto, baseCurrency)
+                .then(price => {
+                    this.latestPrice = price
+                    this.loader.finish()
+                    console.log(price)
+                })
+            } else {
+                console.log("Warning: no base currency set.")
+            }
         }
     }
 
@@ -117,27 +112,27 @@ export class HomePage {
     }
 
     getAllCoins() {
-        this.storage.get("baseCurrency")
-        .then(baseCurrency => {
-            if (baseCurrency) {
-                this.loader.start(200)
-                this.coinService.getAllCoins(baseCurrency)
-                .then(coins => {
-                    let tempCoins: Coin[] = []
-                    coins.forEach(coin => {
-                        let newCoin: Coin = {
-                            name: coin.name,
-                            code: coin.symbol,
-                            rank: coin.rank,
-                            coinmarketcap_id: coin.id
-                        }
-                        tempCoins.push(newCoin)
-                    })
-                    this.cryptoCurrencies = tempCoins
-                    this.loader.finish()
+        let baseCurrency = this.global.get("baseCurrency");
+        if (baseCurrency) {
+            this.loader.start(200)
+            this.coinService.getAllCoins(baseCurrency)
+            .then(coins => {
+                let tempCoins: Coin[] = []
+                coins.forEach(coin => {
+                    let newCoin: Coin = {
+                        name: coin.name,
+                        code: coin.symbol,
+                        rank: coin.rank,
+                        coinmarketcap_id: coin.id
+                    }
+                    tempCoins.push(newCoin)
                 })
-            }
-        })
+                this.cryptoCurrencies = tempCoins
+                this.loader.finish()
+            })
+        } else {
+            console.log("Warning: no base currency set.")
+        }
     }
 
     openSettings(event) {

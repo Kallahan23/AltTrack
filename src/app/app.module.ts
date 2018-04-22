@@ -4,7 +4,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { IonicStorageModule } from '@ionic/storage';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { ComponentsModule } from '../components/components.module';
 import { DelayedLoadingAnimationComponent } from '../components/delayed-loading-animation/delayed-loading-animation';
@@ -24,7 +24,7 @@ import { AppState } from './app.global';
     ],
     imports: [
         BrowserModule,
-        HttpModule,
+        HttpClientModule,
         ComponentsModule,
         IonicModule.forRoot(MyApp),
         IonicStorageModule.forRoot({

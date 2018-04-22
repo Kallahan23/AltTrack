@@ -98,7 +98,7 @@ export class HomePage {
                 this.latestPrice = 0;
                 this.loader.start(200);
                 this.coinService.getMarketTick(this.currentCrypto, baseCurrency)
-                .then(price => {
+                .subscribe(price => {
                     this.latestPrice = price;
                     this.loader.finish();
                     console.log(price);
@@ -123,7 +123,7 @@ export class HomePage {
         if (baseCurrency) {
             this.loader.start(200);
             this.coinService.getAllCoins(baseCurrency)
-            .then(coins => {
+            .subscribe(coins => {
                 let tempCoins: Coin[] = [];
                 coins.forEach(coin => {
                     let newCoin: Coin = {

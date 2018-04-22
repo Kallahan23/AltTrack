@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core'
-import { Http, URLSearchParams } from '@angular/http'
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/toPromise'
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { catchError, map, tap } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
 
-import { Coin } from '../../entities/coin'
+import { Coin } from '../../entities/coin';
 
 /*
 Generated class for the CoinGatewayServiceProvider provider.
@@ -14,89 +15,60 @@ and Angular DI.
 @Injectable()
 export class CoinGatewayServiceProvider {
 
-    CRYPTOCOMPARE_BASE_URL = "https://min-api.cryptocompare.com/data"
-    CRYPTOCOMPARE_PRICE_PATH = "/price"
+    private COINMARKETCAP_BASE_URL = "https://api.coinmarketcap.com"
+    private COINMARKETCAP_TICKER_URL = "/v1/ticker/"
 
-    COINSPOT_BASE_URL = "https://www.coinspot.com.au/pubapi"
-    COINSPOT_LATEST_PATH = "/latest"
-
-    BTCMARKETS_BASE_URL = "https://api.btcmarkets.net"
-    BTCMARKETS_MARKET_PATH = "/market"
-    BTCMARKETS_TICK_PATH = "/tick"
-
-    COINMARKETCAP_BASE_URL = "https://api.coinmarketcap.com"
-    COINMARKETCAP_TICKER_URL = "/v1/ticker/"
-
-    constructor(public http: Http) {
+    constructor(private http: HttpClient) {
         console.log('Hello CoinGatewayServiceProvider Provider')
     }
 
-    getMarketTick(crypto: Coin, base: string): Promise<number> {
+    getMarketTick(crypto: Coin, base: string): Observable<number> {
         let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + crypto.coinmarketcap_id + "/";
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("convert", base);
-        return this.http.get(api, {
-            search: params
-        })
-        .toPromise()
-        .then(response => Number(response.json()[0]["price_".concat(base.toLowerCase())]) as number)
-        .catch(this.handleError)
 
-        /********** Old Code ********/
-        /*switch (crypto.code) {
-            // BTC Markets
-            case "BTC":
-            case "BCH":
-            case "LTC":
-            case "ETC":
-            case "XRP":
-            case "ETH": {
-                let api = this.BTCMARKETS_BASE_URL + this.BTCMARKETS_MARKET_PATH + "/" + crypto.code + "/" + base + this.BTCMARKETS_TICK_PATH
-                return this.http.get(api)
-                .toPromise()
-                .then(response => response.json()["lastPrice"] as number)
-                .catch(this.handleError)
-            }
-            // Coinspot
-            case "DOGE": {
-                let api = this.COINSPOT_BASE_URL + this.COINSPOT_LATEST_PATH
-                return this.http.get(api)
-                .toPromise()
-                .then(response => Number(response.json()["prices"]["doge"]["last"]) as number)
-                .catch(this.handleError)
-            }
-            // Coin Market Cap
-            case "BTG":
-            case "IOTA": {
-                let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/" + crypto.coinmarketcap_id
-                let params: URLSearchParams = new URLSearchParams()
-                params.set("convert", base)
-                return this.http.get(api, {
-                    search: params
-                })
-                .toPromise()
-                .then(response => Number(response.json()[0]["price_".concat(base.toLowerCase())]) as number)
-                .catch(this.handleError)
-            }
-        }*/
+        let params = {
+            "convert": base
+        };
+
+        return this.http.get<number>(api, {
+            params: params
+        }).pipe(
+            map(response => Number(response[0]["price_".concat(base.toLowerCase())]) as number),
+            catchError(this.handleError('getMarketTick', 0))
+        )
     }
 
-    getAllCoins(base: string): Promise<any[]> {
+    getAllCoins(base: string): Observable<any[]> {
         let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/";
+
         let params: URLSearchParams = new URLSearchParams();
         params.set("convert", base);
         params.set("limit", "100");
+
         return this.http.get(api, {
-            search: params
-        })
-        .toPromise()
-        .then(response => response.json())
-        .catch(this.handleError)
+            params: params
+        }).pipe(
+            catchError(this.handleError('getMarketTick', 0))
+        )
     }
 
-    private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error); // for demo purposes only
-        return Promise.reject(error.message || error);
+    /**
+    * Handle Http operation that failed.
+    * Let the app continue.
+    * @param operation - name of the operation that failed
+    * @param result - optional value to return as the observable result
+    */
+    private handleError<T> (operation = 'operation', result?: T) {
+        return (error: any): Observable<T> => {
+
+            // TODO: send the error to remote logging infrastructure
+            console.error(error); // log to console instead
+
+            // TODO: better job of transforming error for user consumption
+            console.log(`${operation} failed: ${error.message}`);
+
+            // Let the app keep running by returning an empty result.
+            return of(result as T);
+        };
     }
 
 }

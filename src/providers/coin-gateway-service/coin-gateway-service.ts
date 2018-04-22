@@ -29,13 +29,13 @@ export class CoinGatewayServiceProvider {
             "convert": base
         };
 
-        return this.http.get<number>(api, { params: params }).pipe(
+        return this.http.get(api, { params: params }).pipe(
             map(response => Number(response[0]["price_".concat(base.toLowerCase())]) as number),
             catchError(this.handleError('getMarketTick', 0))
         )
     }
 
-    getAllCoins(base: string): Observable<any[]> {
+    getAllCoins(base: string): Observable<any> {
         let api = this.COINMARKETCAP_BASE_URL + this.COINMARKETCAP_TICKER_URL + "/";
 
         let params = {
@@ -43,7 +43,7 @@ export class CoinGatewayServiceProvider {
             "limit": "100"
         };
 
-        return this.http.get<any[]>(api, { params: params }).pipe(
+        return this.http.get(api, { params: params }).pipe(
             catchError(this.handleError('getMarketTick', 0))
         )
     }

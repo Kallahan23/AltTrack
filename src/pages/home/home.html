@@ -7,6 +7,7 @@
             </ion-toolbar>
         </ion-header>
         <ion-content>
+            <!-- <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="true" (ionInput)="onInput($event)" (ionCancel)="onCancel($event)"></ion-searchbar> -->
             <ion-list>
                 <button menuClose="left" ion-item *ngFor="let coin of cryptoCurrencies" (click)="changeCoin(coin)">
                     {{ coin.name }}

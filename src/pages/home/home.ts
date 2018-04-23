@@ -20,6 +20,8 @@ import { Portfolio } from '../../entities/portfolio';
 })
 export class HomePage {
 
+    searchInput: string;
+
     cryptoCurrencies: Coin[];
 
     timerSubscription: Subscription;

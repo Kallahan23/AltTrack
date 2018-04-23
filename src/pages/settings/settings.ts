@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular'
+import { IonicPage, NavController, NavParams, ViewController, AlertController } from 'ionic-angular'
 import { Storage } from '@ionic/storage'
 
 import { AppState } from '../../app/app.global'
@@ -36,6 +36,7 @@ export class SettingsPage {
         public navParams: NavParams,
         public viewCtrl: ViewController,
         private storage: Storage,
+        private alertCtrl: AlertController,
         public global: AppState
     ) {
     }
@@ -67,9 +68,28 @@ export class SettingsPage {
     }
 
     clearPortfolio(index: number) {
-        console.log("Deleting: ", this.portfolios[index]);
-        this.portfolios.splice(index, 1);
-        this.storage.set("portfolios", this.portfolios);
+        let alert = this.alertCtrl.create({
+            title: "Delete Portfolio",
+            subTitle: "Are you sure you want to delete this coin?",
+            buttons: [
+                {
+                    text: "Yes",
+                    handler: data => {
+                        console.log("Deleting: ", this.portfolios[index]);
+                        this.portfolios.splice(index, 1);
+                        this.storage.set("portfolios", this.portfolios);
+                    }
+                },
+                {
+                    text: "No",
+                    role: "cancel",
+                    handler: data => {
+                        console.log("Cancel clicked");
+                    }
+                }
+            ]
+        });
+        alert.present();
     }
 
     changeTheme() {

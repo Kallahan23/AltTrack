@@ -10,6 +10,18 @@
             color: #fff;
             background-color: #1b1b1d;
         }
+        ion-searchbar {
+            .searchbar-input {
+                background: #2B2B2F;
+                color: white;
+            }
+            button {
+                background: #2B2B2F;
+            }
+            .searchbar-search-icon {
+                filter: brightness(4);
+            }
+        }
     }
 
     .toolbar-title {

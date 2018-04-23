@@ -20,9 +20,10 @@ import { Portfolio } from '../../entities/portfolio';
 })
 export class HomePage {
 
-    searchInput: string;
+    filterQuery: string = "";
 
     cryptoCurrencies: Coin[];
+    displayedCryptoCurrencies: Coin[];
 
     timerSubscription: Subscription;
     currentCrypto: Coin;
@@ -93,6 +94,21 @@ export class HomePage {
         this.timerSubscription = timer.subscribe(t => this.getCurrentPrice());
     }
 
+    filterItems(ev) {
+        // Reset displayed coins
+        this.displayedCryptoCurrencies = this.cryptoCurrencies;
+
+        // Searchbar value
+        let val = ev.target.value;
+
+        // Filter
+        if (val && val.trim() != '') {
+            this.displayedCryptoCurrencies = this.displayedCryptoCurrencies.filter((item) => {
+                return (item.name.concat(" ", item.code).toLowerCase().indexOf(val.toLowerCase()) > -1);
+            })
+        }
+    }
+
     getCurrentPrice() {
         if (this.currentCrypto) {
             let baseCurrency = this.global.get("baseCurrency");
@@ -136,7 +152,7 @@ export class HomePage {
                     };
                     tempCoins.push(newCoin);
                 })
-                this.cryptoCurrencies = tempCoins;
+                this.displayedCryptoCurrencies = this.cryptoCurrencies = tempCoins;
                 this.loader.finish();
             })
         } else {

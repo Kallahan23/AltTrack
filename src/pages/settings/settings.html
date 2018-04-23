@@ -28,5 +28,23 @@ Ionic pages and navigation.
                 <ion-option *ngFor="let base of baseCurrencies" [value]="base" (ionSelect)="changeBase(base)">{{ base }}</ion-option>
             </ion-select>
         </ion-item>
+        <ion-item>
+
+        </ion-item>
     </ion-list>
+
+    <div *ngIf="portfolios">
+        <h5>My Portfolio</h5>
+        <ion-list *ngIf="portfolios.length > 0">
+            <ion-item *ngFor="let portfolio of portfolios; let i = index">
+                <p>
+                    {{ portfolio.code }}
+                </p>
+                <button ion-button item-end (click)="clearPortfolio(i)" color="danger">Clear</button>
+            </ion-item>
+        </ion-list>
+        <p *ngIf="portfolios.length == 0">
+            Your portfolio is currently empty
+        </p>
+    </div>
 </ion-content>

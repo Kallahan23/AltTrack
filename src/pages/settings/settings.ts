@@ -4,12 +4,14 @@ import { Storage } from '@ionic/storage'
 
 import { AppState } from '../../app/app.global'
 
+import { Portfolio } from '../../entities/portfolio';
+
 /**
-* Generated class for the SettingsPage page.
-*
-* See https://ionicframework.com/docs/components/#navigation for more info on
-* Ionic pages and navigation.
-*/
+ * Generated class for the SettingsPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
 
 @IonicPage()
 @Component({
@@ -18,14 +20,16 @@ import { AppState } from '../../app/app.global'
 })
 export class SettingsPage {
 
-    darkThemeSelected: boolean
+    darkThemeSelected: boolean;
 
     baseCurrencies = [
         "AUD",
         "USD",
         "BTC"
-    ]
-    baseSelected: string
+    ];
+    baseSelected: string;
+
+    portfolios: Portfolio[];
 
     constructor(
         public navCtrl: NavController,
@@ -51,28 +55,42 @@ export class SettingsPage {
                 if (baseCurrency) {
                     this.baseSelected = baseCurrency
                 }
+
+                this.storage.get("portfolios")
+                .then(portfolios => {
+                    if (portfolios) {
+                        this.portfolios = portfolios;
+                        console.log(this.portfolios)
+                    }
+                })
             })
         })
     }
 
+    clearPortfolio(index: number) {
+        console.log("Deleting: ", this.portfolios[index]);
+        this.portfolios.splice(index, 1);
+        this.storage.set("portfolios", this.portfolios);
+    }
+
     changeTheme() {
         if (this.darkThemeSelected) {
-            this.global.set("theme", "dark-theme")
-            this.storage.set("theme", "dark-theme")
+            this.global.set("theme", "dark-theme");
+            this.storage.set("theme", "dark-theme");
 
         } else {
-            this.global.set("theme", "light-theme")
-            this.storage.set("theme", "light-theme")
+            this.global.set("theme", "light-theme");
+            this.storage.set("theme", "light-theme");
         }
     }
 
     changeBase(base: string) {
-        this.global.set("baseCurrency", base)
-        this.storage.set("baseCurrency", base)
+        this.global.set("baseCurrency", base);
+        this.storage.set("baseCurrency", base);
     }
 
     dismiss() {
-        this.viewCtrl.dismiss()
+        this.viewCtrl.dismiss();
     }
 
 }

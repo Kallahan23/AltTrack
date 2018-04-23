@@ -146,6 +146,7 @@ export class HomePage {
         let modal = this.modalCtrl.create(SettingsPage)
         modal.onDidDismiss(data => {
             this.getCurrentPrice();
+            this.refreshPortfolios();
         });
         modal.present({
             ev: event
@@ -158,7 +159,19 @@ export class HomePage {
             if (portfolios) {
                 this.portfolios = portfolios;
             }
-        })
+        });
+    }
+
+    refreshPortfolios() {
+        this.storage.get("portfolios")
+        .then(portfolios => {
+            if (portfolios) {
+                this.portfolios = portfolios;
+                if (this.currentCrypto) {
+                    this.changePortfolio(this.currentCrypto.code);
+                }
+            }
+        });
     }
 
     updatePortfolio() {
@@ -206,18 +219,6 @@ export class HomePage {
         } else {
             this.portfolioCoinsOwned = null;
             this.portfolioAmountInvested = null;
-        }
-    }
-
-    clearCurrentPortfolio() {
-        let index = this.portfolios.findIndex(portfolio => {
-            return portfolio.code === this.currentCrypto.code;
-        });
-        if (index > -1) {
-            this.portfolios.splice(index);
-            this.portfolioCoinsOwned = null;
-            this.portfolioAmountInvested = null;
-            this.storage.set("portfolios", this.portfolios);
         }
     }
 

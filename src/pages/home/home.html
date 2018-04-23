@@ -57,7 +57,10 @@
             </div>
 
             <div *ngIf="!currentCrypto">
-                Welcome to AltTrack<br>Please select a crypto currency
+                Welcome to AltTrack
+                <p>
+                    Please select a crypto currency
+                </p>
             </div>
         </div>
 
@@ -79,8 +82,6 @@
             <p>
                 Profit ({{ global.state['baseCurrency'] }}): {{ profit() | currency:'USD':symbol:'1.2' }}
             </p>
-            <hr>
-            <button ion-button (click)="clearCurrentPortfolio()" color="danger">Clear</button>
         </div>
 
     </ion-content>

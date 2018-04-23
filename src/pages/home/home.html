@@ -35,6 +35,10 @@
     </ion-header>
 
     <ion-content padding>
+        <ion-refresher (ionRefresh)="performRefresh($event)">
+            <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
+
         <div class="dash-content">
             <div *ngIf="currentCrypto">
                 <!-- If baseCurrency is BTC -->

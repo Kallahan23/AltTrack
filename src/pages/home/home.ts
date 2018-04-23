@@ -90,7 +90,7 @@ export class HomePage {
     }
 
     setSubscriptions() {
-        let timer = Observable.timer(20, 60000); // Interval set for 60 seconds (60000 ms)
+        let timer = Observable.timer(20, 300000); // Interval set for 5 minutes (300'000 ms)
         this.timerSubscription = timer.subscribe(t => this.getCurrentPrice());
     }
 
@@ -254,6 +254,28 @@ export class HomePage {
 
     profit(): number {
         return this.walletValue() - this.portfolioAmountInvested;
+    }
+
+    performRefresh(refresher) {
+        console.log('Begin async refresh');
+        if (this.currentCrypto) {
+            let baseCurrency = this.global.get("baseCurrency");
+            if (baseCurrency) {
+                this.latestPrice = 0;
+                this.coinService.getMarketTick(this.currentCrypto, baseCurrency)
+                .subscribe(price => {
+                    this.latestPrice = price;
+                    console.log('Finish async refresh', price);
+                    refresher.complete();
+                })
+            } else {
+                console.log("Warning: no base currency set.");
+                refresher.complete();
+            }
+        } else {
+            console.log("Warning: no currency selected.");
+            refresher.complete();
+        }
     }
 
 }

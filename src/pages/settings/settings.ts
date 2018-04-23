@@ -60,7 +60,6 @@ export class SettingsPage {
                 .then(portfolios => {
                     if (portfolios) {
                         this.portfolios = portfolios;
-                        console.log(this.portfolios)
                     }
                 })
             })

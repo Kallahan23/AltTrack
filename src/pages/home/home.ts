@@ -122,7 +122,7 @@ export class HomePage {
                     console.log(price);
                 })
             } else {
-                console.log("Warning: no base currency set.");
+                console.warn("Warning: no base currency set.");
             }
         }
     }
@@ -156,7 +156,7 @@ export class HomePage {
                 this.loader.finish();
             })
         } else {
-            console.log("Warning: no base currency set.");
+            console.warn("Warning: no base currency set.");
         }
     }
 
@@ -269,11 +269,11 @@ export class HomePage {
                     refresher.complete();
                 })
             } else {
-                console.log("Warning: no base currency set.");
+                console.warn("Warning: no base currency set.");
                 refresher.complete();
             }
         } else {
-            console.log("Warning: no currency selected.");
+            console.warn("Warning: no currency selected.");
             refresher.complete();
         }
     }

@@ -11,7 +11,7 @@ import { DelayedLoadingAnimationComponent } from '../components/delayed-loading-
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { SettingsPage } from '../pages/settings/settings';
+import { SettingsPageModule } from '../pages/settings/settings.module';
 import { CoinGatewayServiceProvider } from '../providers/coin-gateway-service/coin-gateway-service';
 
 import { AppState } from './app.global';
@@ -19,10 +19,10 @@ import { AppState } from './app.global';
 @NgModule({
     declarations: [
         MyApp,
-        HomePage,
-        SettingsPage
+        HomePage
     ],
     imports: [
+        SettingsPageModule,
         BrowserModule,
         HttpClientModule,
         ComponentsModule,
@@ -34,8 +34,7 @@ import { AppState } from './app.global';
     bootstrap: [IonicApp],
     entryComponents: [
         MyApp,
-        HomePage,
-        SettingsPage
+        HomePage
     ],
     providers: [
         AppState,

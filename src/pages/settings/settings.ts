@@ -109,7 +109,7 @@ export class SettingsPage {
     }
 
     dismiss() {
-        this.viewCtrl.dismiss();
+        this.navCtrl.pop();
     }
 
 }

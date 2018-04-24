@@ -2,11 +2,18 @@
     ion-content {
         background-color: #1b1b1d;
         color: #fff;
-        button {
+        ion-list {
+            .coin {
+                color: #fff;
+                background-color: #1b1b1d;
+            }
+
+        }
+        ion-item {
             color: #fff;
             background-color: #1b1b1d;
         }
-        ion-item {
+        ion-select {
             color: #fff;
             background-color: #1b1b1d;
         }
@@ -20,6 +27,12 @@
             }
             .searchbar-search-icon {
                 filter: brightness(4);
+            }
+        }
+        ion-toggle {
+            button {
+                color: #fff;
+                background-color: transparent;
             }
         }
     }

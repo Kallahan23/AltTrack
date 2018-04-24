@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, MenuController, ModalController } from 'ionic-angular';
+import { NavController, MenuController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Observable, Subscription } from 'rxjs/Rx';
 
@@ -37,13 +37,11 @@ export class HomePage {
         public navCtrl: NavController,
         private storage: Storage,
         private menuCtrl: MenuController,
-        private modalCtrl: ModalController,
         private loader: DelayedLoadingAnimationComponent,
         private coinService: CoinGatewayServiceProvider,
         public global: AppState
     ) {
         this.configureSettings();
-        this.getPortfolios();
         this.getAllCoins();
     }
 
@@ -51,6 +49,12 @@ export class HomePage {
         console.log('ionViewDidLoad HomePage');
         this.menuCtrl.enable(true, "left");
         this.menuCtrl.open("left");
+    }
+
+    ionViewDidEnter() {
+        this.refreshPortfolios();
+        this.getCurrentPrice();
+        console.log("ionViewDidEnter HomePage");
     }
 
     ionViewDidLeave() {
@@ -94,7 +98,7 @@ export class HomePage {
         this.timerSubscription = timer.subscribe(t => this.getCurrentPrice());
     }
 
-    filterItems(ev) {
+    filterItems(ev: any) {
         // Reset displayed coins
         this.displayedCryptoCurrencies = this.cryptoCurrencies;
 
@@ -127,7 +131,7 @@ export class HomePage {
         }
     }
 
-    changeCoin(coin) {
+    changeCoin(coin: Coin) {
         if (this.currentCrypto != coin) {
             // this.updatePortfolio();
             this.currentCrypto = coin;
@@ -160,25 +164,18 @@ export class HomePage {
         }
     }
 
-    openSettings(event) {
-        let modal = this.modalCtrl.create(SettingsPage)
-        modal.onDidDismiss(data => {
-            this.getCurrentPrice();
-            this.refreshPortfolios();
-        });
-        modal.present({
-            ev: event
-        });
+    openSettings(ev: any) {
+        this.navCtrl.push(SettingsPage);
     }
 
-    getPortfolios() {
-        this.storage.get("portfolios")
-        .then(portfolios => {
-            if (portfolios) {
-                this.portfolios = portfolios;
-            }
-        });
-    }
+    // getPortfolios() {
+    //     this.storage.get("portfolios")
+    //     .then(portfolios => {
+    //         if (portfolios) {
+    //             this.portfolios = portfolios;
+    //         }
+    //     });
+    // }
 
     refreshPortfolios() {
         this.storage.get("portfolios")

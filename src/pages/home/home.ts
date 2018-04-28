@@ -71,12 +71,16 @@ export class HomePage {
                     .then((theme) => {
                         this.storage.set("baseCurrency", "AUD")
                         .then((base) => {
-                            this.global.set("theme", theme);
-                            this.global.set("baseCurrency", base);
-                            this.setSubscriptions();
-                        })
-                    })
-                })
+                            this.storage.set("portfolioEnable", true)
+                            .then((portfolioEnable) => {
+                                this.global.set("theme", theme);
+                                this.global.set("baseCurrency", base);
+                                this.global.set("portfolioEnable", portfolioEnable);
+                                this.setSubscriptions();
+                            });
+                        });
+                    });
+                });
             } else {
                 this.storage.get("theme")
                 .then(theme => {
@@ -86,11 +90,16 @@ export class HomePage {
                     .then(base => {
                         this.global.set("baseCurrency", base);
 
-                        this.setSubscriptions();
-                    })
-                })
+                        this.storage.get("portfolioEnable")
+                        .then(portfolioEnable => {
+                            this.global.set("portfolioEnable", base);
+
+                            this.setSubscriptions();
+                        });
+                    });
+                });
             }
-        })
+        });
     }
 
     setSubscriptions() {

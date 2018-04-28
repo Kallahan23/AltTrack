@@ -29,11 +29,12 @@ Ionic pages and navigation.
             </ion-select>
         </ion-item>
         <ion-item>
-
+            <ion-label>Enable Portfolio</ion-label>
+            <ion-toggle [(ngModel)]="portfolioEnable" (ionChange)="togglePortfolio()"></ion-toggle>
         </ion-item>
     </ion-list>
 
-    <div *ngIf="portfolios">
+    <div *ngIf="portfolios && portfolioEnable">
         <h5>My Portfolio</h5>
         <ion-list *ngIf="portfolios.length > 0">
             <ion-item *ngFor="let portfolio of portfolios; let i = index">

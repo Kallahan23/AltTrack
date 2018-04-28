@@ -29,6 +29,7 @@ export class SettingsPage {
     ];
     baseSelected: string;
 
+    portfolioEnable: boolean;
     portfolios: Portfolio[];
 
     constructor(
@@ -42,19 +43,19 @@ export class SettingsPage {
     }
 
     ionViewDidLoad() {
-        console.log('ionViewDidLoad SettingsPage')
+        console.log('ionViewDidLoad SettingsPage');
         // TODO concurrent promises more efficient
 
         this.storage.get("theme")
         .then(theme => {
             if (theme === "dark-theme") {
-                this.darkThemeSelected = true
+                this.darkThemeSelected = true;
             }
 
             this.storage.get("baseCurrency")
             .then(baseCurrency => {
                 if (baseCurrency) {
-                    this.baseSelected = baseCurrency
+                    this.baseSelected = baseCurrency;
                 }
 
                 this.storage.get("portfolios")
@@ -62,9 +63,16 @@ export class SettingsPage {
                     if (portfolios) {
                         this.portfolios = portfolios;
                     }
-                })
-            })
-        })
+
+                    this.storage.get("portfolioEnable")
+                    .then(portfolioEnable => {
+                        if (portfolioEnable) {
+                            this.portfolioEnable = portfolioEnable;
+                        }
+                    });
+                });
+            });
+        });
     }
 
     clearPortfolio(index: number) {
@@ -106,6 +114,11 @@ export class SettingsPage {
     changeBase(base: string) {
         this.global.set("baseCurrency", base);
         this.storage.set("baseCurrency", base);
+    }
+
+    togglePortfolio() {
+        this.global.set("portfolioEnable", this.portfolioEnable);
+        this.storage.set("portfolioEnable", this.portfolioEnable);
     }
 
     dismiss() {

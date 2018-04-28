@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div *ngIf="currentCrypto" class="portfolio-content">
+        <div *ngIf="currentCrypto && global.state['portfolioEnable']" class="portfolio-content">
             <ion-item>
                 <ion-label color="primary" stacked>Coins Owned ({{ currentCrypto.code }})</ion-label>
                 <ion-input (focusout)="updatePortfolio()" [(ngModel)]="portfolioCoinsOwned" type="number" step="0.00000001" placeholder="The number of coins owned"></ion-input>

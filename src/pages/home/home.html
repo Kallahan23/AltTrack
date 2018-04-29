@@ -78,15 +78,30 @@
                 <ion-label color="primary" stacked>Amount Invested ({{ global.state['baseCurrency'] }})</ion-label>
                 <ion-input (focusout)="updatePortfolio()" [(ngModel)]="portfolioAmountInvested" type="number" step="0.01" placeholder="The total amount of {{global.state['baseCurrency']}} invested"></ion-input>
             </ion-item>
-            <p>
-                Break Even Point ({{ global.state['baseCurrency'] }}): {{ breakEvenPoint() | currency:'USD':symbol:'1.2' }}
-            </p>
-            <p>
-                Current Wallet Value ({{ global.state['baseCurrency'] }}): {{ walletValue() | currency:'USD':symbol:'1.2' }}
-            </p>
-            <p>
-                Profit ({{ global.state['baseCurrency'] }}): {{ profit() | currency:'USD':symbol:'1.2' }}
-            </p>
+            <!-- If baseCurrency is BTC -->
+            <div *ngIf="global.state['baseCurrency'] === 'BTC'">
+                <p>
+                    Break Even Point ({{ global.state['baseCurrency'] }}): {{ breakEvenPoint() }}
+                </p>
+                <p>
+                    Current Wallet Value ({{ global.state['baseCurrency'] }}): {{ walletValue() }}
+                </p>
+                <p>
+                    Profit ({{ global.state['baseCurrency'] }}): {{ profit() }}
+                </p>
+            </div>
+            <!-- If baseCurrency is FIAT -->
+            <div *ngIf="!(global.state['baseCurrency'] === 'BTC')">
+                <p>
+                    Break Even Point ({{ global.state['baseCurrency'] }}): {{ breakEvenPoint() | currency:'USD':symbol:'1.2' }}
+                </p>
+                <p>
+                    Current Wallet Value ({{ global.state['baseCurrency'] }}): {{ walletValue() | currency:'USD':symbol:'1.2' }}
+                </p>
+                <p>
+                    Profit ({{ global.state['baseCurrency'] }}): {{ profit() | currency:'USD':symbol:'1.2' }}
+                </p>
+            </div>
         </div>
 
     </ion-content>

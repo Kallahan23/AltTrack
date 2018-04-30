@@ -1,8 +1,10 @@
-import { Component } from '@angular/core'
-import { IonicPage, NavController, NavParams, ViewController, AlertController } from 'ionic-angular'
-import { Storage } from '@ionic/storage'
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, ViewController, AlertController, Platform } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
-import { AppState } from '../../app/app.global'
+import { AppState } from '../../app/app.global';
+
+import { StatusBar } from '@ionic-native/status-bar';
 
 import { Portfolio } from '../../entities/portfolio';
 
@@ -38,7 +40,9 @@ export class SettingsPage {
         public viewCtrl: ViewController,
         private storage: Storage,
         private alertCtrl: AlertController,
-        public global: AppState
+        public global: AppState,
+        public statusBar: StatusBar,
+        public platform: Platform
     ) {
     }
 
@@ -104,10 +108,16 @@ export class SettingsPage {
         if (this.darkThemeSelected) {
             this.global.set("theme", "dark-theme");
             this.storage.set("theme", "dark-theme");
+            if (this.platform.is("cordova")) {
+                this.statusBar.backgroundColorByHexString('24172F');
+            }
 
         } else {
             this.global.set("theme", "light-theme");
             this.storage.set("theme", "light-theme");
+            if (this.platform.is("cordova")) {
+                this.statusBar.backgroundColorByHexString('488aff');
+            }
         }
     }
 
